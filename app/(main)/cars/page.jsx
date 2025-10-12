@@ -12,20 +12,19 @@ export default async function CarsPage() {
   const filtersData = await getCarFilters();
 
   return (
-    <div className="container mx-auto px-4 py-12">
-      <h1 className="text-6xl mb-4 gradient-title">Explorar Coches</h1>
-
-      <div className="flex flex-col lg:flex-row gap-8">
-        {/* Filters Section */}
-        <div className="w-full lg:w-80 flex-shrink-0">
-          <CarFilters filters={filtersData.data} />
-        </div>
-
-        {/* Car Listings */}
-        <div className="flex-1">
-          <CarListings />
-        </div>
+    <div className="container mx-auto px-4 py-12 space-y-8">
+      <div>
+        <h1 className="text-4xl md:text-5xl font-semibold text-foreground tracking-tight">
+          Explorar coches
+        </h1>
+        <p className="text-foreground/70 mt-3 max-w-2xl">
+          Filtra por marca, carrocería, precio o transmisión y encuentra el coche que se adapta a tu estilo.
+        </p>
       </div>
+
+      <CarFilters filters={filtersData.data} />
+
+      <CarListings />
     </div>
   );
 }

@@ -37,10 +37,10 @@ export const Sidebar = () => {
   return (
     <>
       {/* Desktop Sidebar */}
-      <div className="hidden md:flex h-full flex-col overflow-y-auto bg-white shadow-sm border-r">
+      <div className="hidden md:flex h-full flex-col overflow-y-auto bg-card border-r border-accent/20">
         <div className="p-6">
           <Link href="/admin">
-            <h1 className="text-xl font-bold">CochesToday Admin</h1>
+            <h1 className="text-xl font-semibold text-foreground">CochesToday Admin</h1>
           </Link>
         </div>
         <div className="flex flex-col w-full">
@@ -49,9 +49,9 @@ export const Sidebar = () => {
               key={route.href}
               href={route.href}
               className={cn(
-                "flex items-center gap-x-2 text-slate-500 text-sm font-medium pl-6 transition-all hover:text-slate-600 hover:bg-slate-100/50",
+                "flex items-center gap-x-2 text-foreground/60 text-sm font-medium pl-6 transition-all hover:text-foreground hover:bg-accent/15",
                 pathname === route.href
-                  ? "text-blue-700 bg-blue-100/50 hover:bg-blue-100 hover:text-blue-700"
+                  ? "text-foreground bg-accent/20 hover:bg-accent/25"
                   : "",
                 "h-12"
               )}
@@ -62,32 +62,32 @@ export const Sidebar = () => {
           ))}
         </div>
         <div className="mt-auto p-6">
-          <button 
+          <button
             onClick={signOut}
-            className="flex items-center gap-x-2 text-slate-500 text-sm font-medium transition-all hover:text-slate-600"
+            className="flex items-center gap-x-2 text-foreground/60 text-sm font-medium transition-all hover:text-foreground"
           >
             <LogOut className="h-5 w-5" />
-            Cerrar Sesión
+            Cerrar sesión
           </button>
         </div>
       </div>
 
       {/* Mobile Bottom Tabs */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t flex justify-around items-center h-16">
+      <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-card border-t border-accent/20 flex justify-around items-center h-16">
         {routes.map((route) => (
           <Link
             key={route.href}
             href={route.href}
             className={cn(
-              "flex flex-col items-center justify-center text-slate-500 text-xs font-medium transition-all",
-              pathname === route.href ? "text-blue-700" : "",
+              "flex flex-col items-center justify-center text-foreground/60 text-xs font-medium transition-all",
+              pathname === route.href ? "text-accent" : "",
               "py-1 flex-1"
             )}
           >
             <route.icon
               className={cn(
                 "h-6 w-6 mb-1",
-                pathname === route.href ? "text-blue-700" : "text-slate-500"
+                pathname === route.href ? "text-accent" : "text-foreground/60"
               )}
             />
             {route.label}

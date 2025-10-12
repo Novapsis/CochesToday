@@ -15,28 +15,28 @@ export const CarFilterControls = ({
   const filterSections = [
     {
       id: "make",
-      title: "Make",
+      title: "Marca",
       options: filters.makes.map((m) => ({ value: m.id, label: m.name })),
       currentValue: make,
       onChange: (value) => onFilterChange("make", value),
     },
     {
       id: "bodyType",
-      title: "Body Type",
+      title: "Carrocería",
       options: filters.bodyTypes.map((type) => ({ value: type, label: type })),
       currentValue: bodyType,
       onChange: (value) => onFilterChange("bodyType", value),
     },
     {
       id: "fuelType",
-      title: "Fuel Type",
+      title: "Combustible",
       options: filters.fuelTypes.map((type) => ({ value: type, label: type })),
       currentValue: fuelType,
       onChange: (value) => onFilterChange("fuelType", value),
     },
     {
       id: "transmission",
-      title: "Transmission",
+      title: "Transmisión",
       options: filters.transmissions.map((type) => ({
         value: type,
         label: type,
@@ -50,7 +50,7 @@ export const CarFilterControls = ({
     <div className="space-y-6">
       {/* Price Range */}
       <div className="space-y-4">
-        <h3 className="font-medium">Price Range</h3>
+        <h3 className="font-medium text-foreground">Rango de precio</h3>
         <div className="px-2">
           <Slider
             min={filters.priceRange.min}
@@ -60,24 +60,24 @@ export const CarFilterControls = ({
             onValueChange={(value) => onFilterChange("priceRange", value)}
           />
         </div>
-        <div className="flex items-center justify-between">
-          <div className="font-medium text-sm">€ {priceRange[0]}</div>
-          <div className="font-medium text-sm">€ {priceRange[1]}</div>
+        <div className="flex items-center justify-between text-sm font-medium text-foreground/80">
+          <div>€ {priceRange[0]}</div>
+          <div>€ {priceRange[1]}</div>
         </div>
       </div>
 
       {/* Filter Categories */}
       {filterSections.map((section) => (
         <div key={section.id} className="space-y-3">
-          <h4 className="text-sm font-medium flex justify-between">
+          <h4 className="text-sm font-medium text-foreground flex justify-between">
             <span>{section.title}</span>
             {section.currentValue && (
               <button
-                className="text-xs text-gray-600 flex items-center"
+                className="text-xs text-foreground/60 flex items-center hover:text-foreground"
                 onClick={() => onClearFilter(section.id)}
               >
                 <X className="mr-1 h-3 w-3" />
-                Clear
+                Quitar
               </button>
             )}
           </h4>
@@ -88,10 +88,10 @@ export const CarFilterControls = ({
                 variant={
                   section.currentValue === option.value ? "default" : "outline"
                 }
-                className={`cursor-pointer px-3 py-1 ${
+                className={`cursor-pointer px-3 py-1 transition-colors ${
                   section.currentValue === option.value
-                    ? "bg-blue-100 hover:bg-blue-200 text-blue-900 border-blue-200"
-                    : "bg-white hover:bg-gray-100 text-gray-700"
+                    ? "bg-accent/20 text-foreground border-accent/40"
+                    : "bg-background border-accent/25 text-foreground/70 hover:border-accent/40"
                 }`}
                 onClick={() => {
                   section.onChange(

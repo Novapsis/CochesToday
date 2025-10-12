@@ -11,8 +11,13 @@ export default async function AdminDashboardPage() {
   const dashboardData = await getDashboardData();
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-6">Dashboard</h1>
+    <div className="p-6 space-y-6">
+      <div>
+        <h1 className="text-3xl font-semibold text-foreground">Panel de administración</h1>
+        <p className="text-foreground/70 mt-2">
+          Revisa el rendimiento de tus coches y gestiona las operaciones del concesionario.
+        </p>
+      </div>
       <Dashboard initialData={dashboardData} />
     </div>
   );

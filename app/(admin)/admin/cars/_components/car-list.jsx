@@ -13,9 +13,11 @@ import {
   Eye,
   Loader2,
   Car as CarIcon,
+  Send,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Table,
   TableBody,
@@ -44,6 +46,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import useFetch from "@/hooks/use-fetch";
 import { getCars, deleteCar, updateCarStatus } from "@/actions/cars";
+import { sendMessageToUser } from "@/actions/admin-management";
 import { formatCurrency } from "@/lib/helpers";
 import Image from "next/image";
 
@@ -54,6 +57,9 @@ export const CarsList = () => {
   const [search, setSearch] = useState("");
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [carToDelete, setCarToDelete] = useState(null);
+  const [messageDialogOpen, setMessageDialogOpen] = useState(false);
+  const [carToMessage, setCarToMessage] = useState(null);
+  const [messageContent, setMessageContent] = useState("");
 
   // Custom hooks for API calls
   const {
@@ -77,6 +83,13 @@ export const CarsList = () => {
     error: updateError,
   } = useFetch(updateCarStatus);
 
+  const {
+    loading: sendingMessage,
+    fn: sendMessageFn,
+    data: sendMessageResult,
+    error: sendMessageError,
+  } = useFetch(sendMessageToUser);
+
   // Initial fetch and refetch on search changes
   useEffect(() => {
     fetchCars(search);
@@ -85,30 +98,41 @@ export const CarsList = () => {
   // Handle errors
   useEffect(() => {
     if (carsError) {
-      toast.error("Failed to load cars");
+      toast.error("No se pudieron cargar los coches");
     }
 
     if (deleteError) {
-      toast.error("Failed to delete car");
+      toast.error("No se pudo eliminar el coche");
     }
 
     if (updateError) {
-      toast.error("Failed to update car");
+      toast.error("No se pudo actualizar el coche");
     }
-  }, [carsError, deleteError, updateError]);
+    if (sendMessageError) {
+      toast.error(sendMessageError.message || "No se pudo enviar el mensaje");
+    }
+  }, [carsError, deleteError, updateError, sendMessageError]);
 
   // Handle successful operations
   useEffect(() => {
     if (deleteResult?.success) {
-      toast.success("Car deleted successfully");
+      toast.success("Coche eliminado correctamente");
       fetchCars(search);
     }
 
     if (updateResult?.success) {
-      toast.success("Car updated successfully");
+      toast.success("Coche actualizado correctamente");
       fetchCars(search);
     }
-  }, [deleteResult, updateResult, search]);
+    if (sendMessageResult?.success) {
+      toast.success("Mensaje enviado");
+      setMessageContent("");
+      setCarToMessage(null);
+      setMessageDialogOpen(false);
+    } else if (sendMessageResult && !sendMessageResult.success) {
+      toast.error(sendMessageResult.error || "No se pudo enviar el mensaje");
+    }
+  }, [deleteResult, updateResult, sendMessageResult, search]);
 
   // Handle search submit
   const handleSearchSubmit = (e) => {
@@ -135,29 +159,47 @@ export const CarsList = () => {
     await updateCarStatusFn(car.id, { status: newStatus });
   };
 
+  const handleSendMessage = async () => {
+    if (!carToMessage || !carToMessage.owner) {
+      toast.error("No se encontró el propietario del coche");
+      return;
+    }
+    const trimmed = messageContent.trim();
+    if (!trimmed) {
+      toast.error("Escribe un mensaje antes de enviarlo");
+      return;
+    }
+    await sendMessageFn({ userId: carToMessage.owner.id, content: trimmed });
+  };
+
   // Get status badge color
   const getStatusBadge = (status) => {
-    switch (status) {
-      case "AVAILABLE":
+    const normalized = status?.toLowerCase?.() ?? "";
+    switch (normalized) {
+      case "activo":
         return (
-          <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
-            Available
+          <Badge className="bg-emerald-100 text-emerald-800 border-emerald-200">
+            Activo
           </Badge>
         );
-      case "UNAVAILABLE":
+      case "reservado":
         return (
-          <Badge className="bg-amber-100 text-amber-800 hover:bg-amber-100">
-            Unavailable
+          <Badge className="bg-amber-100 text-amber-800 border-amber-200">
+            Reservado
           </Badge>
         );
-      case "SOLD":
+      case "vendido":
         return (
-          <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100">
-            Sold
+          <Badge className="bg-blue-100 text-blue-800 border-blue-200">
+            Vendido
           </Badge>
         );
       default:
-        return <Badge variant="outline">{status}</Badge>;
+        return (
+          <Badge variant="outline" className="border-accent/40 text-foreground">
+            {status || "Desconocido"}
+          </Badge>
+        );
     }
   };
 
@@ -170,16 +212,16 @@ export const CarsList = () => {
           className="flex items-center"
         >
           <Plus className="h-4 w-4" />
-          Add Car
+          Añadir coche
         </Button>
 
         {/* Simple Search Form */}
         <form onSubmit={handleSearchSubmit} className="flex w-full sm:w-auto">
           <div className="relative flex-1">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
+            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-foreground/40" />
             <Input
               type="search"
-              placeholder="Search cars..."
+              placeholder="Buscar por marca, modelo o color..."
               className="pl-9 w-full sm:w-60"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -193,7 +235,7 @@ export const CarsList = () => {
         <CardContent className="p-0">
           {loadingCars && !carsData ? (
             <div className="flex justify-center items-center py-12">
-              <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
+              <Loader2 className="h-8 w-8 animate-spin text-foreground/40" />
             </div>
           ) : carsData?.success && carsData.data.length > 0 ? (
             <div className="overflow-x-auto">
@@ -201,12 +243,13 @@ export const CarsList = () => {
                 <TableHeader>
                   <TableRow>
                     <TableHead className="w-12"></TableHead>
-                    <TableHead>Make & Model</TableHead>
-                    <TableHead>Year</TableHead>
-                    <TableHead>Price</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Featured</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
+                    <TableHead>Coche</TableHead>
+                    <TableHead>Año</TableHead>
+                    <TableHead>Precio</TableHead>
+                    <TableHead>Estado</TableHead>
+                    <TableHead>Destacado</TableHead>
+                    <TableHead>Propietario</TableHead>
+                    <TableHead className="text-right">Acciones</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -247,9 +290,25 @@ export const CarsList = () => {
                           {car.featured ? (
                             <Star className="h-5 w-5 text-amber-500 fill-amber-500" />
                           ) : (
-                            <StarOff className="h-5 w-5 text-gray-400" />
+                            <StarOff className="h-5 w-5 text-foreground/30" />
                           )}
                         </Button>
+                      </TableCell>
+                      <TableCell>
+                        {car.owner ? (
+                          <div className="flex flex-col items-start">
+                            <span className="text-sm font-medium text-foreground">
+                              {car.owner.name}
+                            </span>
+                            <span className="text-xs text-foreground/60">
+                              {car.owner.email}
+                            </span>
+                          </div>
+                        ) : (
+                          <span className="text-xs text-foreground/50">
+                            Sin propietario
+                          </span>
+                        )}
                       </TableCell>
                       <TableCell className="text-right">
                         <DropdownMenu>
@@ -263,40 +322,56 @@ export const CarsList = () => {
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                            <DropdownMenuLabel>Acciones</DropdownMenuLabel>
                             <DropdownMenuItem
                               onClick={() => router.push(`/cars/${car.id}`)}
                             >
                               <Eye className="mr-2 h-4 w-4" />
-                              View
+                              Ver ficha pública
                             </DropdownMenuItem>
+                            {car.owner && (
+                              <DropdownMenuItem
+                                onClick={() => {
+                                  setCarToMessage(car);
+                                  setMessageDialogOpen(true);
+                                }}
+                              >
+                                <Send className="mr-2 h-4 w-4" />
+                                Enviar mensaje
+                              </DropdownMenuItem>
+                            )}
                             <DropdownMenuSeparator />
-                            <DropdownMenuLabel>Status</DropdownMenuLabel>
+                            <DropdownMenuLabel>Estado</DropdownMenuLabel>
                             <DropdownMenuItem
                               onClick={() =>
-                                handleStatusUpdate(car, "AVAILABLE")
+                                handleStatusUpdate(car, "activo")
                               }
                               disabled={
-                                car.status === "AVAILABLE" || updatingCar
+                                car.status?.toLowerCase() === "activo" ||
+                                updatingCar
                               }
                             >
-                              Set Available
+                              Marcar como activo
                             </DropdownMenuItem>
                             <DropdownMenuItem
                               onClick={() =>
-                                handleStatusUpdate(car, "UNAVAILABLE")
+                                handleStatusUpdate(car, "reservado")
                               }
                               disabled={
-                                car.status === "UNAVAILABLE" || updatingCar
+                                car.status?.toLowerCase() === "reservado" ||
+                                updatingCar
                               }
                             >
-                              Set Unavailable
+                              Marcar como reservado
                             </DropdownMenuItem>
                             <DropdownMenuItem
-                              onClick={() => handleStatusUpdate(car, "SOLD")}
-                              disabled={car.status === "SOLD" || updatingCar}
+                              onClick={() => handleStatusUpdate(car, "vendido")}
+                              disabled={
+                                car.status?.toLowerCase() === "vendido" ||
+                                updatingCar
+                              }
                             >
-                              Mark as Sold
+                              Marcar como vendido
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem
@@ -307,7 +382,7 @@ export const CarsList = () => {
                               }}
                             >
                               <Trash2 className="mr-2 h-4 w-4" />
-                              Delete
+                              Eliminar
                             </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
@@ -319,17 +394,17 @@ export const CarsList = () => {
             </div>
           ) : (
             <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
-              <CarIcon className="h-12 w-12 text-gray-300 mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-1">
-                No cars found
+              <CarIcon className="h-12 w-12 text-foreground/30 mb-4" />
+              <h3 className="text-lg font-medium text-foreground mb-1">
+                No hay coches para mostrar
               </h3>
-              <p className="text-gray-500 mb-4">
+              <p className="text-foreground/60 mb-4 max-w-md">
                 {search
-                  ? "No cars match your search criteria"
-                  : "Your inventory is empty. Add cars to get started."}
+                  ? "No hay coches que coincidan con la búsqueda actual."
+                  : "Tu inventario aún está vacío. Añade un coche para comenzar."}
               </p>
               <Button onClick={() => router.push("/admin/cars/create")}>
-                Add Your First Car
+                Añadir un coche
               </Button>
             </div>
           )}
@@ -340,11 +415,11 @@ export const CarsList = () => {
       <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Confirm Deletion</DialogTitle>
+            <DialogTitle>Confirmar eliminación</DialogTitle>
             <DialogDescription>
-              Are you sure you want to delete {carToDelete?.make}{" "}
-              {carToDelete?.model} ({carToDelete?.year})? This action cannot be
-              undone.
+              ¿Seguro que deseas eliminar {carToDelete?.make}{" "}
+              {carToDelete?.model} ({carToDelete?.year})? Esta acción no se
+              puede deshacer.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
@@ -353,7 +428,7 @@ export const CarsList = () => {
               onClick={() => setDeleteDialogOpen(false)}
               disabled={deletingCar}
             >
-              Cancel
+              Cancelar
             </Button>
             <Button
               variant="destructive"
@@ -363,10 +438,64 @@ export const CarsList = () => {
               {deletingCar ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Deleting...
+                  Eliminando...
                 </>
               ) : (
-                "Delete Car"
+                "Eliminar coche"
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Send Message Dialog */}
+      <Dialog open={messageDialogOpen} onOpenChange={setMessageDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Enviar mensaje al propietario</DialogTitle>
+            <DialogDescription>
+              Escribe un mensaje que será enviado directamente al usuario dueño del coche.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="rounded-lg border border-accent/25 bg-background/60 p-3 text-sm text-foreground/80">
+              <p className="font-medium text-foreground">
+                {carToMessage?.make} {carToMessage?.model} ({carToMessage?.year})
+              </p>
+              <p className="text-foreground/60">
+                Destinatario: {carToMessage?.owner?.name} ({carToMessage?.owner?.email})
+              </p>
+            </div>
+            <Textarea
+              rows={4}
+              placeholder="Escribe tu mensaje..."
+              value={messageContent}
+              onChange={(e) => setMessageContent(e.target.value)}
+            />
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setMessageDialogOpen(false);
+                setMessageContent("");
+                setCarToMessage(null);
+              }}
+              disabled={sendingMessage}
+            >
+              Cancelar
+            </Button>
+            <Button onClick={handleSendMessage} disabled={sendingMessage}>
+              {sendingMessage ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Enviando...
+                </>
+              ) : (
+                <>
+                  <Send className="mr-2 h-4 w-4" />
+                  Enviar mensaje
+                </>
               )}
             </Button>
           </DialogFooter>

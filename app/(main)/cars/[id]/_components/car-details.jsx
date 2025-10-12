@@ -109,6 +109,7 @@ export function CarDetails({ car }) {
                 src={car.images[currentImageIndex]?.url || car.images[currentImageIndex]}
                 alt={`${car.year} ${car.brand?.name || ''} ${car.model?.name || ''}`}
                 fill
+                sizes="(min-width: 1024px) 60vw, 100vw"
                 className="object-cover"
                 priority
               />
@@ -136,6 +137,7 @@ export function CarDetails({ car }) {
                     src={image?.url || image}
                     alt={`${car.year} ${car.brand?.name || ''} ${car.model?.name || ''} - vista ${index + 1}`}
                     fill
+                    sizes="96px"
                     className="object-cover"
                   />
                 </div>

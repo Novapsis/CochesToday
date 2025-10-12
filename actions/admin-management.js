@@ -236,3 +236,54 @@ export async function getAdminStats() {
     return { success: false, error: error.message };
   }
 }
+
+/**
+ * Envía un mensaje directo a un usuario desde el panel de administración
+ */
+export async function sendMessageToUser({ userId, content }) {
+  try {
+    const currentUser = await getCurrentUser();
+    if (!currentUser) {
+      return { success: false, error: "No autenticado" };
+    }
+
+    const admin = await db.adminUser.findUnique({
+      where: { userId: currentUser.id },
+    });
+
+    if (!admin) {
+      return { success: false, error: "No autorizado" };
+    }
+
+    if (!userId) {
+      return { success: false, error: "Usuario objetivo inválido" };
+    }
+
+    const trimmedContent = content?.trim();
+    if (!trimmedContent) {
+      return { success: false, error: "El mensaje no puede estar vacío" };
+    }
+
+    // Verificar que el usuario destino existe
+    const targetUser = await db.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!targetUser) {
+      return { success: false, error: "El usuario seleccionado no existe" };
+    }
+
+    await db.message.create({
+      data: {
+        fromId: currentUser.id,
+        toId: userId,
+        content: trimmedContent,
+      },
+    });
+
+    return { success: true };
+  } catch (error) {
+    console.error("Error sending admin message:", error);
+    return { success: false, error: error.message };
+  }
+}

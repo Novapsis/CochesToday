@@ -58,11 +58,12 @@ export default function AvatarUpload({ currentAvatar, onUploadSuccess }) {
   return (
     <div className="flex flex-col items-center gap-3">
       <div className="relative group">
-        <div className="relative h-32 w-32 rounded-full overflow-hidden ring-4 ring-blue-100">
+        <div className="relative h-32 w-32 rounded-full overflow-hidden ring-4 ring-accent/30">
           <Image
             src={preview || '/avatar-placeholder.png'}
             alt="Avatar"
             fill
+            sizes="128px"
             className="object-cover"
           />
           {uploading && (
@@ -73,7 +74,7 @@ export default function AvatarUpload({ currentAvatar, onUploadSuccess }) {
         </div>
         
         <label
-          className={`absolute bottom-0 right-0 bg-blue-600 text-white rounded-full p-3 cursor-pointer hover:bg-blue-700 transition shadow-lg ${
+          className={`absolute bottom-0 right-0 bg-accent text-accent-foreground rounded-full p-3 cursor-pointer hover:bg-accent/80 transition shadow-lg ${
             uploading ? 'opacity-50 cursor-not-allowed' : ''
           }`}
         >

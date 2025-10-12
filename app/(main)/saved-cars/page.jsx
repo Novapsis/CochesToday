@@ -21,8 +21,15 @@ export default async function SavedCarsPage() {
   const savedCarsResult = await getSavedCars(user.id);
 
   return (
-    <div className="container mx-auto px-4 py-12">
-      <h1 className="text-6xl mb-6 gradient-title">Mis Coches Favoritos</h1>
+    <div className="container mx-auto px-4 py-12 space-y-6">
+      <div>
+        <h1 className="text-4xl md:text-5xl font-semibold text-foreground tracking-tight">
+          Mis coches favoritos
+        </h1>
+        <p className="text-foreground/70 mt-3 max-w-2xl">
+          Aquí aparecerán todos los vehículos que marques con el corazón para revisarlos más tarde.
+        </p>
+      </div>
       <SavedCarsList initialData={savedCarsResult} />
     </div>
   );

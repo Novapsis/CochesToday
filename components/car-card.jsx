@@ -67,6 +67,7 @@ export const CarCard = ({ car }) => {
               src={car.images[0]?.url || car.images[0]}
               alt={`${car.brand?.name || ''} ${car.model?.name || ''}`}
               fill
+              sizes="(min-width: 1024px) 360px, 100vw"
               className="object-cover group-hover:scale-105 transition duration-300"
             />
           </div>

@@ -9,17 +9,18 @@ export function SavedCarsList({ initialData }) {
   // No saved cars
   if (!initialData?.data || initialData?.data.length === 0) {
     return (
-      <div className="min-h-[400px] flex flex-col items-center justify-center text-center p-8 border rounded-lg bg-gray-50">
-        <div className="bg-gray-100 p-4 rounded-full mb-4">
-          <Heart className="h-8 w-8 text-gray-500" />
+      <div className="min-h-[360px] flex flex-col items-center justify-center text-center p-10 border border-accent/25 rounded-2xl bg-card/90">
+        <div className="bg-accent/15 p-4 rounded-full mb-4">
+          <Heart className="h-8 w-8 text-accent" />
         </div>
-        <h3 className="text-lg font-medium mb-2">No tienes coches guardados</h3>
-        <p className="text-gray-500 mb-6 max-w-md">
-          Aún no has guardado ningún coche. Navega por nuestros anuncios y haz clic en el
-          corazón para guardar coches para más tarde.
+        <h3 className="text-xl font-semibold text-foreground mb-2">
+          No tienes coches guardados
+        </h3>
+        <p className="text-foreground/70 mb-6 max-w-md leading-relaxed">
+          Aún no has guardado ningún coche. Explora nuestros anuncios y pulsa el corazón para añadir tus favoritos.
         </p>
-        <Button variant="default" asChild>
-          <Link href="/cars">Ver Coches</Link>
+        <Button asChild>
+          <Link href="/cars">Ver coches disponibles</Link>
         </Button>
       </div>
     );

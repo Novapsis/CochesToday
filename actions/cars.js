@@ -242,9 +242,36 @@ export async function getCars(search = "") {
     const cars = await db.car.findMany({
       where,
       orderBy: { createdAt: "desc" },
+      include: {
+        owner: {
+          select: {
+            id: true,
+            email: true,
+            profile: {
+              select: {
+                name: true,
+                phone: true,
+              },
+            },
+          },
+        },
+      },
     });
 
-    const serializedCars = cars.map(serializeCarData);
+    const serializedCars = cars.map((car) => {
+      const serialized = serializeCarData(car);
+      return {
+        ...serialized,
+        owner: car.owner
+          ? {
+              id: car.owner.id,
+              email: car.owner.email,
+              name: car.owner.profile?.name || car.owner.email,
+              phone: car.owner.profile?.phone || null,
+            }
+          : null,
+      };
+    });
 
     return {
       success: true,
@@ -262,8 +289,12 @@ export async function getCars(search = "") {
 // Delete a car by ID
 export async function deleteCar(id) {
   try {
-    const { userId } = await auth();
-    if (!userId) throw new Error("Unauthorized");
+    const cookieStore = await cookies();
+    const supabase = createClient(cookieStore);
+    const {
+      data: { user: supabaseUser },
+    } = await supabase.auth.getUser();
+    if (!supabaseUser) throw new Error("Unauthorized");
 
     // First, fetch the car to get its images
     const car = await db.car.findUnique({
@@ -285,7 +316,7 @@ export async function deleteCar(id) {
 
     // Delete the images from Supabase storage
     try {
-      const cookieStore = cookies();
+      const cookieStore = await cookies();
       const supabase = createClient(cookieStore);
 
       // Extract file paths from image URLs
@@ -331,13 +362,34 @@ export async function deleteCar(id) {
 // Update car status or featured status
 export async function updateCarStatus(id, { status, featured }) {
   try {
-    const { userId } = await auth();
-    if (!userId) throw new Error("Unauthorized");
+    const cookieStore = await cookies();
+    const supabase = createClient(cookieStore);
+    const {
+      data: { user: supabaseUser },
+    } = await supabase.auth.getUser();
+    if (!supabaseUser) throw new Error("Unauthorized");
 
     const updateData = {};
 
     if (status !== undefined) {
-      updateData.status = status;
+        const normalized = typeof status === "string" ? status.toLowerCase() : "";
+        const statusMap = {
+          activo: "activo",
+          available: "activo",
+          disponible: "activo",
+          reservada: "reservado",
+          reservado: "reservado",
+          unavailable: "reservado",
+          "no disponible": "reservado",
+          vendido: "vendido",
+          sold: "vendido",
+        };
+
+        if (!statusMap[normalized]) {
+          throw new Error("Estado no válido");
+        }
+
+        updateData.status = statusMap[normalized];
     }
 
     if (featured !== undefined) {

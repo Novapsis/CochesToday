@@ -41,9 +41,9 @@ export function Dashboard({ initialData }) {
         value={activeTab}
         onValueChange={setActiveTab}
       >
-        <TabsList>
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="test-drives">Test Drives</TabsTrigger>
+        <TabsList className="bg-card border border-accent/20">
+          <TabsTrigger value="overview">Resumen</TabsTrigger>
+          <TabsTrigger value="test-drives">Pruebas de conducción</TabsTrigger>
         </TabsList>
 
         {/* Overview Tab */}
@@ -53,35 +53,35 @@ export function Dashboard({ initialData }) {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Total Cars
+                  Coches totales
                 </CardTitle>
                 <Car className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{cars.total}</div>
                 <p className="text-xs text-muted-foreground">
-                  {cars.available} available, {cars.sold} sold
+                  {cars.available} activos, {cars.sold} vendidos
                 </p>
               </CardContent>
             </Card>
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Test Drives
+                  Pruebas agendadas
                 </CardTitle>
                 <Calendar className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{testDrives.total}</div>
                 <p className="text-xs text-muted-foreground">
-                  {testDrives.pending} pending, {testDrives.confirmed} confirmed
+                  {testDrives.pending} pendientes, {testDrives.confirmed} confirmadas
                 </p>
               </CardContent>
             </Card>
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Conversion Rate
+                  Ratio de conversión
                 </CardTitle>
                 <TrendingUp className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
@@ -90,19 +90,19 @@ export function Dashboard({ initialData }) {
                   {testDrives.conversionRate}%
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  From test drives to sales
+                  De pruebas a ventas cerradas
                 </p>
               </CardContent>
             </Card>
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Cars Sold</CardTitle>
+                <CardTitle className="text-sm font-medium">Coches vendidos</CardTitle>
                 <DollarSign className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{cars.sold}</div>
                 <p className="text-xs text-muted-foreground">
-                  {((cars.sold / cars.total) * 100).toFixed(1)}% of inventory
+                  {((cars.sold / cars.total) * 100).toFixed(1)}% del inventario
                 </p>
               </CardContent>
             </Card>
@@ -111,82 +111,77 @@ export function Dashboard({ initialData }) {
           {/* Additional Overview Content */}
           <Card>
             <CardHeader>
-              <CardTitle>Dealership Summary</CardTitle>
+              <CardTitle>Estado del concesionario</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-gray-50 p-4 rounded-lg">
-                    <h3 className="font-medium text-sm mb-2">Car Inventory</h3>
+                  <div className="bg-background/80 border border-accent/15 p-4 rounded-lg">
+                    <h3 className="font-medium text-sm mb-2 text-foreground">Inventario disponible</h3>
                     <div className="flex items-center">
-                      <div className="w-full bg-gray-200 rounded-full h-2.5">
+                      <div className="w-full bg-accent/15 rounded-full h-2.5">
                         <div
-                          className="bg-green-600 h-2.5 rounded-full"
-                          style={{
-                            width: `${(cars.available / cars.total) * 100}%`,
-                          }}
-                        ></div>
+                          className="bg-emerald-500 h-2.5 rounded-full"
+                          style={{ width: `${(cars.available / cars.total) * 100}%` }}
+                        />
                       </div>
-                      <span className="ml-2 text-sm">
+                      <span className="ml-2 text-sm text-foreground">
                         {((cars.available / cars.total) * 100).toFixed(0)}%
                       </span>
                     </div>
-                    <p className="text-xs text-gray-500 mt-2">
-                      Available inventory capacity
+                    <p className="text-xs text-foreground/60 mt-2">
+                      Coches listos para ser mostrados a clientes
                     </p>
                   </div>
 
-                  <div className="bg-gray-50 p-4 rounded-lg">
-                    <h3 className="font-medium text-sm mb-2">
-                      Test Drive Success
+                  <div className="bg-background/80 border border-accent/15 p-4 rounded-lg">
+                    <h3 className="font-medium text-sm mb-2 text-foreground">
+                      Éxito en pruebas
                     </h3>
                     <div className="flex items-center">
-                      <div className="w-full bg-gray-200 rounded-full h-2.5">
+                      <div className="w-full bg-accent/15 rounded-full h-2.5">
                         <div
-                          className="bg-blue-600 h-2.5 rounded-full"
+                          className="bg-accent h-2.5 rounded-full"
                           style={{
                             width: `${
-                              (testDrives.completed / (testDrives.total || 1)) *
-                              100
+                              (testDrives.completed / (testDrives.total || 1)) * 100
                             }%`,
                           }}
-                        ></div>
+                        />
                       </div>
-                      <span className="ml-2 text-sm">
+                      <span className="ml-2 text-sm text-foreground">
                         {(
-                          (testDrives.completed / (testDrives.total || 1)) *
-                          100
-                        ).toFixed(0)}
-                        %
+                          (testDrives.completed / (testDrives.total || 1)) * 100
+                        ).toFixed(0)}%
                       </span>
                     </div>
-                    <p className="text-xs text-gray-500 mt-2">
-                      Completed test drives
+                    <p className="text-xs text-foreground/60 mt-2">
+                      Pruebas completadas con éxito
                     </p>
                   </div>
                 </div>
 
                 <div className="grid grid-cols-3 gap-4 mt-6">
                   <div className="text-center">
-                    <span className="text-3xl font-bold text-blue-600">
+                    <span className="text-3xl font-bold text-accent">
                       {cars.sold}
                     </span>
-                    <p className="text-sm text-gray-600 mt-1">Cars Sold</p>
+                    <p className="text-sm text-foreground/60 mt-1">Ventas cerradas</p>
                   </div>
                   <div className="text-center">
-                    <span className="text-3xl font-bold text-amber-600">
+                    <span className="text-3xl font-bold text-amber-500">
                       {testDrives.pending + testDrives.confirmed}
                     </span>
-                    <p className="text-sm text-gray-600 mt-1">
-                      Upcoming Test Drives
+                    <p className="text-sm text-foreground/60 mt-1">
+                      Pruebas próximas
                     </p>
                   </div>
                   <div className="text-center">
-                    <span className="text-3xl font-bold text-green-600">
+                    <span className="text-3xl font-bold text-emerald-500">
                       {((cars.available / (cars.total || 1)) * 100).toFixed(0)}%
                     </span>
-                    <p className="text-sm text-gray-600 mt-1">
-                      Inventory Utilization
+                    <p className="text-sm text-foreground/60 mt-1">
+                      Uso del inventario
                     </p>
                   </div>
                 </div>
@@ -201,7 +196,7 @@ export function Dashboard({ initialData }) {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
-                  Total Bookings
+                  Solicitudes totales
                 </CardTitle>
                 <Calendar className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
@@ -211,53 +206,49 @@ export function Dashboard({ initialData }) {
             </Card>
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Pending</CardTitle>
+                <CardTitle className="text-sm font-medium">Pendientes</CardTitle>
                 <Clock className="h-4 w-4 text-amber-500" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{testDrives.pending}</div>
                 <p className="text-xs text-muted-foreground">
-                  {((testDrives.pending / testDrives.total) * 100).toFixed(1)}%
-                  of bookings
+                  {((testDrives.pending / testDrives.total) * 100).toFixed(1)}% del total
                 </p>
               </CardContent>
             </Card>
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Confirmed</CardTitle>
+                <CardTitle className="text-sm font-medium">Confirmadas</CardTitle>
                 <CheckCircle className="h-4 w-4 text-green-500" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{testDrives.confirmed}</div>
                 <p className="text-xs text-muted-foreground">
-                  {((testDrives.confirmed / testDrives.total) * 100).toFixed(1)}
-                  % of bookings
+                  {((testDrives.confirmed / testDrives.total) * 100).toFixed(1)}% del total
                 </p>
               </CardContent>
             </Card>
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Completed</CardTitle>
+                <CardTitle className="text-sm font-medium">Completadas</CardTitle>
                 <CheckCircle className="h-4 w-4 text-blue-500" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{testDrives.completed}</div>
                 <p className="text-xs text-muted-foreground">
-                  {((testDrives.completed / testDrives.total) * 100).toFixed(1)}
-                  % of bookings
+                  {((testDrives.completed / testDrives.total) * 100).toFixed(1)}% del total
                 </p>
               </CardContent>
             </Card>
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Cancelled</CardTitle>
+                <CardTitle className="text-sm font-medium">Canceladas</CardTitle>
                 <XCircle className="h-4 w-4 text-red-500" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{testDrives.cancelled}</div>
                 <p className="text-xs text-muted-foreground">
-                  {((testDrives.cancelled / testDrives.total) * 100).toFixed(1)}
-                  % of bookings
+                  {((testDrives.cancelled / testDrives.total) * 100).toFixed(1)}% del total
                 </p>
               </CardContent>
             </Card>
@@ -266,30 +257,30 @@ export function Dashboard({ initialData }) {
           {/* Test Drive Status Visualization */}
           <Card>
             <CardHeader>
-              <CardTitle>Test Drive Statistics</CardTitle>
+              <CardTitle>Estadísticas de pruebas</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-6">
                 <div className="grid grid-cols-2 gap-6">
-                  {/* Conversion Rate Card */}
-                  <div className="bg-gray-50 rounded-lg p-4">
-                    <h3 className="text-lg font-medium mb-2">
-                      Conversion Rate
+                  {/* Conversión a venta Card */}
+                  <div className="bg-background/80 border border-accent/15 rounded-lg p-4">
+                    <h3 className="text-lg font-medium text-foreground mb-2">
+                      Conversión a venta
                     </h3>
-                    <div className="text-3xl font-bold text-blue-600">
+                    <div className="text-3xl font-bold text-accent">
                       {testDrives.conversionRate}%
                     </div>
-                    <p className="text-sm text-gray-600 mt-1">
-                      Test drives resulting in car purchases
+                    <p className="text-sm text-foreground/60 mt-1">
+                      Pruebas que terminaron en una venta
                     </p>
                   </div>
 
                   {/* Test Drive Success Rate */}
-                  <div className="bg-gray-50 rounded-lg p-4">
-                    <h3 className="text-lg font-medium mb-2">
-                      Completion Rate
+                  <div className="bg-background/80 border border-accent/15 rounded-lg p-4">
+                    <h3 className="text-lg font-medium text-foreground mb-2">
+                      Pruebas completadas
                     </h3>
-                    <div className="text-3xl font-bold text-green-600">
+                    <div className="text-3xl font-bold text-emerald-500">
                       {testDrives.total
                         ? (
                             (testDrives.completed / testDrives.total) *
@@ -298,20 +289,20 @@ export function Dashboard({ initialData }) {
                         : 0}
                       %
                     </div>
-                    <p className="text-sm text-gray-600 mt-1">
-                      Test drives successfully completed
+                    <p className="text-sm text-foreground/60 mt-1">
+                      Porcentaje de pruebas finalizadas correctamente
                     </p>
                   </div>
                 </div>
 
                 {/* Status Breakdown */}
                 <div className="space-y-4 mt-4">
-                  <h3 className="font-medium">Booking Status Breakdown</h3>
+                  <h3 className="font-medium text-foreground">Distribución por estado</h3>
 
-                  {/* Pending */}
+                  {/* Pendientes */}
                   <div className="space-y-2">
                     <div className="flex justify-between text-sm">
-                      <span>Pending</span>
+                      <span>Pendientes</span>
                       <span className="font-medium">
                         {testDrives.pending} (
                         {(
@@ -321,7 +312,7 @@ export function Dashboard({ initialData }) {
                         %)
                       </span>
                     </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2.5">
+                    <div className="w-full bg-accent/15 rounded-full h-2.5">
                       <div
                         className="bg-amber-500 h-2.5 rounded-full"
                         style={{
@@ -333,10 +324,10 @@ export function Dashboard({ initialData }) {
                     </div>
                   </div>
 
-                  {/* Confirmed */}
+                  {/* Confirmadas */}
                   <div className="space-y-2">
                     <div className="flex justify-between text-sm">
-                      <span>Confirmed</span>
+                      <span>Confirmadas</span>
                       <span className="font-medium">
                         {testDrives.confirmed} (
                         {(
@@ -346,7 +337,7 @@ export function Dashboard({ initialData }) {
                         %)
                       </span>
                     </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2.5">
+                    <div className="w-full bg-accent/15 rounded-full h-2.5">
                       <div
                         className="bg-green-500 h-2.5 rounded-full"
                         style={{
@@ -358,10 +349,10 @@ export function Dashboard({ initialData }) {
                     </div>
                   </div>
 
-                  {/* Completed */}
+                  {/* Completadas */}
                   <div className="space-y-2">
                     <div className="flex justify-between text-sm">
-                      <span>Completed</span>
+                      <span>Completadas</span>
                       <span className="font-medium">
                         {testDrives.completed} (
                         {(
@@ -371,7 +362,7 @@ export function Dashboard({ initialData }) {
                         %)
                       </span>
                     </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2.5">
+                    <div className="w-full bg-accent/15 rounded-full h-2.5">
                       <div
                         className="bg-blue-600 h-2.5 rounded-full"
                         style={{
@@ -383,10 +374,10 @@ export function Dashboard({ initialData }) {
                     </div>
                   </div>
 
-                  {/* Cancelled */}
+                  {/* Canceladas */}
                   <div className="space-y-2">
                     <div className="flex justify-between text-sm">
-                      <span>Cancelled</span>
+                      <span>Canceladas</span>
                       <span className="font-medium">
                         {testDrives.cancelled} (
                         {(
@@ -396,7 +387,7 @@ export function Dashboard({ initialData }) {
                         %)
                       </span>
                     </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2.5">
+                    <div className="w-full bg-accent/15 rounded-full h-2.5">
                       <div
                         className="bg-red-500 h-2.5 rounded-full"
                         style={{
@@ -420,9 +411,9 @@ export function Dashboard({ initialData }) {
                         %)
                       </span>
                     </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2.5">
+                    <div className="w-full bg-accent/15 rounded-full h-2.5">
                       <div
-                        className="bg-gray-500 h-2.5 rounded-full"
+                        className="bg-background/80 border border-accent/150 h-2.5 rounded-full"
                         style={{
                           width: `${
                             (testDrives.noShow / testDrives.total) * 100

@@ -33,37 +33,45 @@ import { addCar, processCarImageWithAI } from "@/actions/cars";
 import useFetch from "@/hooks/use-fetch";
 import Image from "next/image";
 
-// Predefined options
-const fuelTypes = ["Petrol", "Diesel", "Electric", "Hybrid", "Plug-in Hybrid"];
-const transmissions = ["Automatic", "Manual", "Semi-Automatic"];
+// Opciones predefinidas
+const fuelTypes = [
+  "Gasolina",
+  "Diésel",
+  "Eléctrico",
+  "Híbrido",
+  "Híbrido enchufable",
+];
+const transmissions = ["Automática", "Manual", "Semi-automática"];
 const bodyTypes = [
   "SUV",
-  "Sedan",
+  "Sedán",
   "Hatchback",
-  "Convertible",
-  "Coupe",
-  "Wagon",
+  "Descapotable",
+  "Coupé",
+  "Familiar",
   "Pickup",
 ];
-const carStatuses = ["AVAILABLE", "UNAVAILABLE", "SOLD"];
+const carStatuses = ["activo", "reservado", "vendido"];
 
 // Define form schema with Zod
 const carFormSchema = z.object({
-  make: z.string().min(1, "Make is required"),
-  model: z.string().min(1, "Model is required"),
+  make: z.string().min(1, "La marca es obligatoria"),
+  model: z.string().min(1, "El modelo es obligatorio"),
   year: z.string().refine((val) => {
     const year = parseInt(val);
     return !isNaN(year) && year >= 1900 && year <= new Date().getFullYear() + 1;
-  }, "Valid year required"),
-  price: z.string().min(1, "Price is required"),
-  mileage: z.string().min(1, "Mileage is required"),
-  color: z.string().min(1, "Color is required"),
-  fuelType: z.string().min(1, "Fuel type is required"),
-  transmission: z.string().min(1, "Transmission is required"),
-  bodyType: z.string().min(1, "Body type is required"),
+  }, "Introduce un año válido"),
+  price: z.string().min(1, "El precio es obligatorio"),
+  mileage: z.string().min(1, "El kilometraje es obligatorio"),
+  color: z.string().min(1, "El color es obligatorio"),
+  fuelType: z.string().min(1, "El tipo de combustible es obligatorio"),
+  transmission: z.string().min(1, "La transmisión es obligatoria"),
+  bodyType: z.string().min(1, "La carrocería es obligatoria"),
   seats: z.string().optional(),
-  description: z.string().min(10, "Description must be at least 10 characters"),
-  status: z.enum(["AVAILABLE", "UNAVAILABLE", "SOLD"]),
+  description: z
+    .string()
+    .min(10, "La descripción debe tener al menos 10 caracteres"),
+  status: z.enum(["activo", "reservado", "vendido"]),
   featured: z.boolean().default(false),
   // Images are handled separately
 });
@@ -99,7 +107,7 @@ export const AddCarForm = () => {
       bodyType: "",
       seats: "",
       description: "",
-      status: "AVAILABLE",
+      status: "activo",
       featured: false,
     },
   });
@@ -121,14 +129,14 @@ export const AddCarForm = () => {
   // Handle successful car addition
   useEffect(() => {
     if (addCarResult?.success) {
-      toast.success("Car added successfully");
+      toast.success("Coche añadido correctamente");
       router.push("/admin/cars");
     }
   }, [addCarResult, router]);
 
   useEffect(() => {
     if (processImageError) {
-      toast.error(processImageError.message || "Failed to upload car");
+      toast.error(processImageError.message || "No se pudo procesar la imagen");
     }
   }, [processImageError]);
 
@@ -170,7 +178,7 @@ export const AddCarForm = () => {
   // Process image with Gemini AI
   const processWithAI = async () => {
     if (!uploadedAiImage) {
-      toast.error("Please upload an image first");
+      toast.error("Sube una imagen primero");
       return;
     }
 
@@ -183,7 +191,7 @@ export const AddCarForm = () => {
     if (!file) return;
 
     if (file.size > 5 * 1024 * 1024) {
-      toast.error("Image size should be less than 5MB");
+      toast.error("La imagen debe pesar menos de 5 MB");
       return;
     }
 
@@ -269,7 +277,7 @@ export const AddCarForm = () => {
   const onSubmit = async (data) => {
     // Check if images are uploaded
     if (uploadedImages.length === 0) {
-      setImageError("Please upload at least one image");
+      setImageError("Sube al menos una imagen");
       return;
     }
 

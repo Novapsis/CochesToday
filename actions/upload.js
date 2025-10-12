@@ -10,7 +10,7 @@ import { revalidatePath } from 'next/cache';
  */
 export async function uploadAvatar(formData) {
   // Create Supabase client with cookie handling
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
@@ -97,7 +97,7 @@ export async function uploadAvatar(formData) {
  * Sube imágenes de un coche a Supabase Storage
  */
 export async function uploadCarImages(carId, formData) {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
@@ -201,7 +201,7 @@ export async function uploadCarImages(carId, formData) {
  * Elimina una imagen de un coche
  */
 export async function deleteCarImage(imageId) {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,

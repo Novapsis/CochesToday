@@ -98,14 +98,6 @@ export default async function Home() {
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
-            <Button
-              size="lg"
-              variant="ghost"
-              className="px-8 text-base text-foreground hover:bg-accent/20"
-              asChild
-            >
-              <Link href="/publish">Publicar mi coche</Link>
-            </Button>
           </div>
           <div className="flex flex-wrap justify-center gap-6 md:gap-10">
             <TrustIndicator

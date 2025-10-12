@@ -8,7 +8,7 @@ import { createServerClient } from "@/lib/supabase";
 
 // Helper function to get authenticated user from Supabase session
 async function getAuthenticatedUser() {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const supabase = createServerClient(cookieStore);
   const { data: { user: supabaseUser } } = await supabase.auth.getUser();
 

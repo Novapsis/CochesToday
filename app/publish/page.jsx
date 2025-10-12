@@ -21,9 +21,13 @@ export default async function PublishPage() {
   });
 
   return (
-    <div className="container mx-auto px-4 py-10">
-      <h1 className="text-3xl md:text-4xl font-semibold mb-6">Publicar coche</h1>
-      <PublishCarForm brands={brands} models={models} />
+    <div className="container mx-auto px-4 py-10 flex flex-col items-center">
+      <div className="w-full max-w-3xl space-y-6">
+        <h1 className="text-3xl md:text-4xl font-semibold text-center text-foreground">
+          Publicar coche
+        </h1>
+        <PublishCarForm brands={brands} models={models} />
+      </div>
     </div>
   );
 }

@@ -121,7 +121,7 @@ const Header = ({ isAdminPage = false }) => {
                   <button className="hidden sm:inline-flex items-center px-1 py-1 rounded-full border border-accent/30 bg-background/80 hover:border-accent/60" aria-label="Abrir menú de usuario">
                     {user?.profile?.avatarUrl ? (
                       <span className="relative inline-block h-8 w-8 overflow-hidden rounded-full ring-1 ring-border">
-                        <Image src={user.profile.avatarUrl} alt={user?.profile?.name || user?.email} fill className="object-cover" />
+                        <Image src={user.profile.avatarUrl} alt={user?.profile?.name || user?.email} fill sizes="32px" className="object-cover" />
                       </span>
                     ) : (
                       <UserCircle2 size={26} className="text-muted-foreground" />
