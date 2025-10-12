@@ -202,7 +202,14 @@ export async function getCarById(carId) {
   try {
     const dbUser = await getAuthenticatedUser();
 
-    const car = await db.car.findUnique({ where: { id: carId } });
+    const car = await db.car.findUnique({
+      where: { id: carId },
+      include: {
+        images: true,
+        brand: true,
+        model: true,
+      },
+    });
     if (!car) return { success: false, error: "Car not found" };
 
     let isWishlisted = false;
@@ -213,37 +220,9 @@ export async function getCarById(carId) {
       isWishlisted = !!savedCar;
     }
 
-    const existingTestDrive = dbUser ? await db.testDriveBooking.findFirst({
-      where: { carId, userId: dbUser.id, status: { in: ["PENDING", "CONFIRMED", "COMPLETED"] } },
-      orderBy: { createdAt: "desc" },
-    }) : null;
-
-    const dealership = await db.dealershipInfo.findFirst({
-      include: { workingHours: true },
-    });
-
     return {
       success: true,
-      data: {
-        ...serializeCarData(car, isWishlisted),
-        testDriveInfo: {
-          userTestDrive: existingTestDrive ? {
-            id: existingTestDrive.id,
-            status: existingTestDrive.status,
-            bookingDate: existingTestDrive.bookingDate.toISOString(),
-          } : null,
-          dealership: dealership ? {
-            ...dealership,
-            createdAt: dealership.createdAt.toISOString(),
-            updatedAt: dealership.updatedAt.toISOString(),
-            workingHours: dealership.workingHours.map((hour) => ({
-              ...hour,
-              createdAt: hour.createdAt.toISOString(),
-              updatedAt: hour.updatedAt.toISOString(),
-            })),
-          } : null,
-        },
-      },
+      data: serializeCarData(car, isWishlisted),
     };
   } catch (error) {
     throw new Error("Error fetching car details:" + error.message);

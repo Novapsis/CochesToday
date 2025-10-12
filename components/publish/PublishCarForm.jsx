@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
@@ -93,6 +94,13 @@ export default function PublishCarForm({ brands, models }) {
       const res = await fetch("/api/cars", { method: "POST", body: data });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error || "Error al crear el coche");
+      toast.success("Coche publicado", {
+        description: "Haz clic para ver la publicación",
+        action: {
+          label: "Ver coche",
+          onClick: () => router.push(`/cars/${json.id}`),
+        },
+      });
       router.push(`/cars/${json.id}`);
     } catch (err) {
       setServerError(err.message);

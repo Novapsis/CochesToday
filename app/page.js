@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { CarCard } from "@/components/car-card";
-import { ensureSuperAdminAndSeedSamples, getManagedCars } from "@/actions/home";
+import { getManagedCars } from "@/actions/home";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -64,7 +64,6 @@ const HowItWorksStep = ({ icon, title, description }) => (
 
 export default async function Home() {
   const ownerEmail = "novapsiscorp@gmail.com";
-  await ensureSuperAdminAndSeedSamples(ownerEmail);
   const featuredCars = await getManagedCars(ownerEmail, 9);
 
   return (

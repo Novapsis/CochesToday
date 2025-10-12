@@ -106,15 +106,15 @@ export function CarDetails({ car }) {
           <div className="aspect-video rounded-lg overflow-hidden relative mb-4">
             {car.images && car.images.length > 0 ? (
               <Image
-                src={car.images[currentImageIndex]}
-                alt={`${car.year} ${car.make} ${car.model}`}
+                src={car.images[currentImageIndex]?.url || car.images[currentImageIndex]}
+                alt={`${car.year} ${car.brand?.name || ''} ${car.model?.name || ''}`}
                 fill
                 className="object-cover"
                 priority
               />
             ) : (
-              <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                <Car className="h-24 w-24 text-gray-400" />
+              <div className="w-full h-full bg-secondary flex items-center justify-center">
+                <Car className="h-24 w-24 text-foreground/40" />
               </div>
             )}
           </div>
@@ -125,18 +125,16 @@ export function CarDetails({ car }) {
               {car.images.map((image, index) => (
                 <div
                   key={index}
-                  className={`relative cursor-pointer rounded-md h-20 w-24 flex-shrink-0 transition ${
+                    className={`relative cursor-pointer rounded-md h-20 w-24 flex-shrink-0 transition ${
                     index === currentImageIndex
-                      ? "border-2 border-blue-600"
+                      ? "border-2 border-accent"
                       : "opacity-70 hover:opacity-100"
                   }`}
                   onClick={() => setCurrentImageIndex(index)}
                 >
                   <Image
-                    src={image}
-                    alt={`${car.year} ${car.make} ${car.model} - view ${
-                      index + 1
-                    }`}
+                    src={image?.url || image}
+                    alt={`${car.year} ${car.brand?.name || ''} ${car.model?.name || ''} - vista ${index + 1}`}
                     fill
                     className="object-cover"
                   />
@@ -158,7 +156,7 @@ export function CarDetails({ car }) {
               <Heart
                 className={`h-5 w-5 ${isWishlisted ? "fill-red-500" : ""}`}
               />
-              {isWishlisted ? "Saved" : "Save"}
+              {isWishlisted ? "Guardado" : "Guardar"}
             </Button>
             <Button
               variant="outline"
@@ -166,7 +164,7 @@ export function CarDetails({ car }) {
               onClick={handleShare}
             >
               <Share2 className="h-5 w-5" />
-              Share
+              Compartir
             </Button>
           </div>
         </div>
@@ -178,138 +176,103 @@ export function CarDetails({ car }) {
           </div>
 
           <h1 className="text-4xl font-bold mb-1">
-            {car.year} {car.make} {car.model}
+            {car.year} {car.brand?.name || ''} {car.model?.name || ''}
           </h1>
 
-          <div className="text-2xl font-bold text-blue-600">
+          <div className="text-2xl font-bold text-accent">
             {formatCurrency(car.price)}
           </div>
 
           {/* Quick Stats */}
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4 my-6">
-            <div className="flex items-center gap-2">
-              <Gauge className="text-gray-500 h-5 w-5" />
-              <span>{car.mileage.toLocaleString()} miles</span>
+            <div className="flex items-center gap-2 text-foreground">
+              <Gauge className="h-5 w-5 text-accent" />
+              <span>{car.mileage?.toLocaleString()} km</span>
             </div>
-            <div className="flex items-center gap-2">
-              <Fuel className="text-gray-500 h-5 w-5" />
+            <div className="flex items-center gap-2 text-foreground">
+              <Fuel className="h-5 w-5 text-accent" />
               <span>{car.fuelType}</span>
             </div>
-            <div className="flex items-center gap-2">
-              <Car className="text-gray-500 h-5 w-5" />
+            <div className="flex items-center gap-2 text-foreground">
+              <Car className="h-5 w-5 text-accent" />
               <span>{car.transmission}</span>
             </div>
           </div>
 
-          <Dialog>
-            <DialogTrigger className="w-full text-start">
-              <Card className="pt-5">
-                <CardContent>
-                  <div className="flex items-center gap-2 text-lg font-medium mb-2">
-                    <Currency className="h-5 w-5 text-blue-600" />
-                    <h3>EMI Calculator</h3>
-                  </div>
-                  <div className="text-sm text-gray-600">
-                    Estimated Monthly Payment:{" "}
-                    <span className="font-bold text-gray-900">
-                      {formatCurrency(car.price / 60)}
-                    </span>{" "}
-                    for 60 months
-                  </div>
-                  <div className="text-xs text-gray-500 mt-1">
-                    *Based on $0 down payment and 4.5% interest rate
-                  </div>
-                </CardContent>
-              </Card>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>CochesToday Car Loan Calculator</DialogTitle>
-                <EmiCalculator price={car.price} />
-              </DialogHeader>
-            </DialogContent>
-          </Dialog>
+          {/* Financing section disabled for now */}
 
           {/* Request More Info */}
-          <Card className="my-6">
+          <Card className="my-6 bg-card/90 border border-accent/30">
             <CardContent className="p-4">
-              <div className="flex items-center gap-2 text-lg font-medium mb-2">
-                <MessageSquare className="h-5 w-5 text-blue-600" />
-                <h3>Have Questions?</h3>
+              <div className="flex items-center gap-2 text-lg font-medium mb-2 text-foreground">
+                <MessageSquare className="h-5 w-5 text-accent" />
+                <h3>¿Tienes preguntas?</h3>
               </div>
-              <p className="text-sm text-gray-600 mb-3">
-                Our representatives are available to answer all your queries
-                about this vehicle.
+              <p className="text-sm text-foreground/70 mb-3">
+                Nuestro equipo está listo para resolver cualquier duda sobre este vehículo.
               </p>
-              <a href="mailto:help@vehiql.in">
+              <a href="mailto:hola@cochestoday.com">
                 <Button variant="outline" className="w-full">
-                  Request Info
+                  Solicitar información
                 </Button>
               </a>
             </CardContent>
           </Card>
 
-          {(car.status === "SOLD" || car.status === "UNAVAILABLE") && (
+          {car.status !== "activo" && (
             <Alert variant="destructive">
               <AlertTitle className="capitalize">
-                This car is {car.status.toLowerCase()}
+                Este coche está {car.status}
               </AlertTitle>
-              <AlertDescription>Please check again later.</AlertDescription>
+              <AlertDescription>Vuelve a comprobar más tarde.</AlertDescription>
             </Alert>
           )}
 
           {/* Book Test Drive Button */}
-          {car.status !== "SOLD" && car.status !== "UNAVAILABLE" && (
+          {car.status === "activo" && (
             <Button
               className="w-full py-6 text-lg"
-              onClick={handleBookTestDrive}
-              disabled={testDriveInfo.userTestDrive}
+              onClick={() => router.push(`/cars/${car.id}`)}
             >
-              <Calendar className="mr-2 h-5 w-5" />
-              {testDriveInfo.userTestDrive
-                ? `Booked for ${format(
-                    new Date(testDriveInfo.userTestDrive.bookingDate),
-                    "EEEE, MMMM d, yyyy"
-                  )}`
-                : "Book Test Drive"}
+              Reservar prueba de conducción
             </Button>
           )}
         </div>
       </div>
 
       {/* Details & Features Section */}
-      <div className="mt-12 p-6 bg-white rounded-lg shadow-sm">
+      <div className="mt-12 rounded-lg border border-accent/20 bg-card p-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div>
-            <h3 className="text-2xl font-bold mb-6">Description</h3>
-            <p className="whitespace-pre-line text-gray-700">
+            <h3 className="text-2xl font-semibold text-foreground mb-6">Descripción</h3>
+            <p className="whitespace-pre-line text-foreground/80 leading-relaxed">
               {car.description}
             </p>
           </div>
           <div>
-            <h3 className="text-2xl font-bold mb-6">Features</h3>
-            <ul className="grid grid-cols-1 gap-2">
+            <h3 className="text-2xl font-semibold text-foreground mb-6">Características</h3>
+            <ul className="grid grid-cols-1 gap-2 text-foreground/80">
               <li className="flex items-center gap-2">
-                <span className="h-2 w-2 bg-blue-600 rounded-full"></span>
-                {car.transmission} Transmission
+                <span className="h-2 w-2 bg-accent rounded-full"></span>
+                {car.transmission}
               </li>
               <li className="flex items-center gap-2">
-                <span className="h-2 w-2 bg-blue-600 rounded-full"></span>
-                {car.fuelType} Engine
+                <span className="h-2 w-2 bg-accent rounded-full"></span>
+                {car.fuelType}
               </li>
               <li className="flex items-center gap-2">
-                <span className="h-2 w-2 bg-blue-600 rounded-full"></span>
-                {car.bodyType} Body Style
+                <span className="h-2 w-2 bg-accent rounded-full"></span>
+                {car.bodyType}
               </li>
               {car.seats && (
                 <li className="flex items-center gap-2">
-                  <span className="h-2 w-2 bg-blue-600 rounded-full"></span>
-                  {car.seats} Seats
+                  <span className="h-2 w-2 bg-accent rounded-full"></span>
+                  {car.seats} plazas
                 </li>
               )}
               <li className="flex items-center gap-2">
-                <span className="h-2 w-2 bg-blue-600 rounded-full"></span>
-                {car.color} Exterior
+                <span className="h-2 w-2 bg-accent rounded-full"></span>
+                Exterior {car.color}
               </li>
             </ul>
           </div>
@@ -317,47 +280,45 @@ export function CarDetails({ car }) {
       </div>
 
       {/* Specifications Section */}
-      <div className="mt-8 p-6 bg-white rounded-lg shadow-sm">
-        <h2 className="text-2xl font-bold mb-6">Specifications</h2>
-        <div className="bg-gray-50 rounded-lg p-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-8">
-            <div className="flex justify-between py-2 border-b">
-              <span className="text-gray-600">Make</span>
-              <span className="font-medium">{car.make}</span>
+      <div className="mt-8 rounded-lg border border-accent/20 bg-card p-6">
+        <h2 className="text-2xl font-semibold text-foreground mb-6">Especificaciones</h2>
+        <div className="rounded-lg border border-accent/15 bg-background/80 p-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-8 text-foreground/80">
+            <div className="flex justify-between py-2 border-b border-accent/10">
+              <span>Marca</span>
+              <span className="font-medium">{car.brand?.name || ''}</span>
             </div>
-            <div className="flex justify-between py-2 border-b">
-              <span className="text-gray-600">Model</span>
-              <span className="font-medium">{car.model}</span>
+            <div className="flex justify-between py-2 border-b border-accent/10">
+              <span>Modelo</span>
+              <span className="font-medium">{car.model?.name || ''}</span>
             </div>
-            <div className="flex justify-between py-2 border-b">
-              <span className="text-gray-600">Year</span>
+            <div className="flex justify-between py-2 border-b border-accent/10">
+              <span>Año</span>
               <span className="font-medium">{car.year}</span>
             </div>
-            <div className="flex justify-between py-2 border-b">
-              <span className="text-gray-600">Body Type</span>
+            <div className="flex justify-between py-2 border-b border-accent/10">
+              <span>Carrocería</span>
               <span className="font-medium">{car.bodyType}</span>
             </div>
-            <div className="flex justify-between py-2 border-b">
-              <span className="text-gray-600">Fuel Type</span>
+            <div className="flex justify-between py-2 border-b border-accent/10">
+              <span>Combustible</span>
               <span className="font-medium">{car.fuelType}</span>
             </div>
-            <div className="flex justify-between py-2 border-b">
-              <span className="text-gray-600">Transmission</span>
+            <div className="flex justify-between py-2 border-b border-accent/10">
+              <span>Transmisión</span>
               <span className="font-medium">{car.transmission}</span>
             </div>
-            <div className="flex justify-between py-2 border-b">
-              <span className="text-gray-600">Mileage</span>
-              <span className="font-medium">
-                {car.mileage.toLocaleString()} miles
-              </span>
+            <div className="flex justify-between py-2 border-b border-accent/10">
+              <span>Kilometraje</span>
+              <span className="font-medium">{car.mileage?.toLocaleString()} km</span>
             </div>
-            <div className="flex justify-between py-2 border-b">
-              <span className="text-gray-600">Color</span>
+            <div className="flex justify-between py-2 border-b border-accent/10">
+              <span>Color</span>
               <span className="font-medium">{car.color}</span>
             </div>
             {car.seats && (
-              <div className="flex justify-between py-2 border-b">
-                <span className="text-gray-600">Seats</span>
+              <div className="flex justify-between py-2 border-b border-accent/10">
+                <span>Plazas</span>
                 <span className="font-medium">{car.seats}</span>
               </div>
             )}
@@ -365,87 +326,17 @@ export function CarDetails({ car }) {
         </div>
       </div>
 
-      {/* Dealership Location Section */}
-      <div className="mt-8 p-6 bg-white rounded-lg shadow-sm">
-        <h2 className="text-2xl font-bold mb-6">Dealership Location</h2>
-        <div className="bg-gray-50 rounded-lg p-6">
-          <div className="flex flex-col md:flex-row gap-6 justify-between">
-            {/* Dealership Name and Address */}
-            <div className="flex items-start gap-3">
-              <LocateFixed className="h-5 w-5 text-blue-600 mt-1 flex-shrink-0" />
-              <div>
-                <h4 className="font-medium">CochesToday Motors</h4>
-                <p className="text-gray-600">
-                  {testDriveInfo.dealership?.address || "Not Available"}
-                </p>
-                <p className="text-gray-600 mt-1">
-                  Phone: {testDriveInfo.dealership?.phone || "Not Available"}
-                </p>
-                <p className="text-gray-600">
-                  Email: {testDriveInfo.dealership?.email || "Not Available"}
-                </p>
-              </div>
-            </div>
-
-            {/* Working Hours */}
-            <div className="md:w-1/2 lg:w-1/3">
-              <h4 className="font-medium mb-2">Working Hours</h4>
-              <div className="space-y-2">
-                {testDriveInfo.dealership?.workingHours
-                  ? testDriveInfo.dealership.workingHours
-                      .sort((a, b) => {
-                        const days = [
-                          "MONDAY",
-                          "TUESDAY",
-                          "WEDNESDAY",
-                          "THURSDAY",
-                          "FRIDAY",
-                          "SATURDAY",
-                          "SUNDAY",
-                        ];
-                        return (
-                          days.indexOf(a.dayOfWeek) - days.indexOf(b.dayOfWeek)
-                        );
-                      })
-                      .map((day) => (
-                        <div
-                          key={day.dayOfWeek}
-                          className="flex justify-between text-sm"
-                        >
-                          <span className="text-gray-600">
-                            {day.dayOfWeek.charAt(0) +
-                              day.dayOfWeek.slice(1).toLowerCase()}
-                          </span>
-                          <span>
-                            {day.isOpen
-                              ? `${day.openTime} - ${day.closeTime}`
-                              : "Closed"}
-                          </span>
-                        </div>
-                      ))
-                  : // Default hours if none provided
-                    [
-                      "Monday",
-                      "Tuesday",
-                      "Wednesday",
-                      "Thursday",
-                      "Friday",
-                      "Saturday",
-                      "Sunday",
-                    ].map((day, index) => (
-                      <div key={day} className="flex justify-between text-sm">
-                        <span className="text-gray-600">{day}</span>
-                        <span>
-                          {index < 5
-                            ? "9:00 - 18:00"
-                            : index === 5
-                            ? "10:00 - 16:00"
-                            : "Closed"}
-                        </span>
-                      </div>
-                    ))}
-              </div>
-            </div>
+      {/* Vehicle Location */}
+      <div className="mt-8 rounded-lg border border-accent/30 bg-card p-6">
+        <div className="flex items-start gap-3">
+          <LocateFixed className="h-6 w-6 text-accent flex-shrink-0 mt-1" />
+          <div>
+            <h2 className="text-2xl font-semibold text-foreground mb-2">
+              Ubicación del vehículo
+            </h2>
+            <p className="text-foreground/70">
+              {car.location || "Ubicación no disponible"}
+            </p>
           </div>
         </div>
       </div>

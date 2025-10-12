@@ -1,4 +1,6 @@
 /** @type {import('next').NextConfig} */
+const supabaseHost = process.env.NEXT_PUBLIC_SUPABASE_URL ? new URL(process.env.NEXT_PUBLIC_SUPABASE_URL).hostname : undefined;
+
 const nextConfig = {
   experimental: {
     serverComponentsHmrCache: false, // defaults to true
@@ -7,11 +9,15 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "ymqpkygmownybanldbpq.supabase.co",
+        hostname: supabaseHost || "*.supabase.co",
       },
       {
         protocol: "https",
         hostname: "lh3.googleusercontent.com",
+      },
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
       },
     ],
   },

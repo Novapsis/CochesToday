@@ -1,27 +1,10 @@
 import { NextResponse } from 'next/server';
-import { createServerClient } from '@supabase/ssr';
+import { createClient } from '@/lib/supabase/server';
 import { db } from '@/lib/prisma';
+import { revalidatePath } from 'next/cache';
 
 export async function POST(request) {
-  let response = NextResponse.json({ ok: true });
-
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-    {
-      cookies: {
-        get(name) {
-          return request.cookies.get(name)?.value;
-        },
-        set(name, value, options) {
-          response.cookies.set({ name, value, ...options });
-        },
-        remove(name, options) {
-          response.cookies.set({ name, value: '', ...options });
-        },
-      },
-    }
-  );
+  const supabase = await createClient();
 
   try {
     const { data: { user } } = await supabase.auth.getUser();
@@ -118,6 +101,10 @@ export async function POST(request) {
 
       await db.carImage.create({ data: { carId: car.id, url: pub.publicUrl } });
     }
+
+    // Revalidate listings and homepage
+    revalidatePath('/cars');
+    revalidatePath('/');
 
     return NextResponse.json({ id: car.id, images: uploadedUrls }, { status: 201 });
   } catch (err) {

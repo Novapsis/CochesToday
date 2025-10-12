@@ -210,35 +210,24 @@ export async function getDashboardData() {
     }
 
     // Fetch all necessary data in a single parallel operation
-    const [cars, testDrives] = await Promise.all([
-      // Get all cars with minimal fields
-      db.car.findMany({
-        select: {
-          id: true,
-          status: true,
-          featured: true,
-        },
-      }),
+    const carsPromise = db.car.findMany({
+      select: { id: true, status: true, featured: true },
+    });
+    const testDrivesPromise = db?.testDriveBooking?.findMany
+      ? db.testDriveBooking.findMany({ select: { id: true, status: true, carId: true } })
+      : Promise.resolve([]);
 
-      // Get all test drives with minimal fields
-      db.testDriveBooking.findMany({
-        select: {
-          id: true,
-          status: true,
-          carId: true,
-        },
-      }),
-    ]);
+    const [cars, testDrives] = await Promise.all([carsPromise, testDrivesPromise]);
 
     // Calculate car statistics
     const totalCars = cars.length;
-    const availableCars = cars.filter(
-      (car) => car.status === "AVAILABLE"
-    ).length;
-    const soldCars = cars.filter((car) => car.status === "SOLD").length;
-    const unavailableCars = cars.filter(
-      (car) => car.status === "UNAVAILABLE"
-    ).length;
+    const statusCounts = cars.reduce((acc, c) => {
+      acc[c.status] = (acc[c.status] || 0) + 1;
+      return acc;
+    }, {});
+    const availableCars = statusCounts["activo"] || 0;
+    const soldCars = statusCounts["vendido"] || 0;
+    const unavailableCars = statusCounts["inactivo"] || 0;
     const featuredCars = cars.filter((car) => car.featured === true).length;
 
     // Calculate test drive statistics
