@@ -13,13 +13,13 @@ export function SavedCarsList({ initialData }) {
         <div className="bg-gray-100 p-4 rounded-full mb-4">
           <Heart className="h-8 w-8 text-gray-500" />
         </div>
-        <h3 className="text-lg font-medium mb-2">No Saved Cars</h3>
+        <h3 className="text-lg font-medium mb-2">No tienes coches guardados</h3>
         <p className="text-gray-500 mb-6 max-w-md">
-          You haven't saved any cars yet. Browse our listings and click the
-          heart icon to save cars for later.
+          Aún no has guardado ningún coche. Navega por nuestros anuncios y haz clic en el
+          corazón para guardar coches para más tarde.
         </p>
         <Button variant="default" asChild>
-          <Link href="/cars">Browse Cars</Link>
+          <Link href="/cars">Ver Coches</Link>
         </Button>
       </div>
     );

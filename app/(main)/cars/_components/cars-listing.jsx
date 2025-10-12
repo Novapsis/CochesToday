@@ -100,7 +100,7 @@ export function CarListings() {
         <Info className="h-4 w-4" />
         <AlertTitle>Error</AlertTitle>
         <AlertDescription>
-          Failed to load cars. Please try again later.
+          Error al cargar coches. Por favor, inténtalo de nuevo más tarde.
         </AlertDescription>
       </Alert>
     );
@@ -120,13 +120,13 @@ export function CarListings() {
         <div className="bg-gray-100 p-4 rounded-full mb-4">
           <Info className="h-8 w-8 text-gray-500" />
         </div>
-        <h3 className="text-lg font-medium mb-2">No cars found</h3>
+        <h3 className="text-lg font-medium mb-2">No se encontraron coches</h3>
         <p className="text-gray-500 mb-6 max-w-md">
-          We couldn't find any cars matching your search criteria. Try adjusting
-          your filters or search term.
+          No pudimos encontrar ningún coche que coincida con tus criterios de búsqueda. Intenta ajustar
+          tus filtros o término de búsqueda.
         </p>
         <Button variant="outline" asChild>
-          <Link href="/cars">Clear all filters</Link>
+          <Link href="/cars">Limpiar todos los filtros</Link>
         </Button>
       </div>
     );

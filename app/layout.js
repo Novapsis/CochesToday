@@ -1,35 +1,34 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/header";
-import { ClerkProvider } from "@clerk/nextjs";
+import Footer from "@/components/footer";
+import AuthProvider from "@/components/auth/AuthProvider";
 import { Toaster } from "sonner";
+import ThemeProvider from "@/components/theme-provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "Vehiqle",
-  description: "Find your Dream Car",
+  title: "CochesToday - Marketplace de Coches",
+  description: "Compra y vende coches con nuestro servicio concierge",
 };
 
 export default function RootLayout({ children }) {
   return (
-    <ClerkProvider>
-      <html lang="en">
-        <head>
-          <link rel="icon" href="/logo-white.png" sizes="any" />
-        </head>
-        <body className={`${inter.className}`}>
-          <Header />
-          <main className="min-h-screen">{children}</main>
-          <Toaster richColors />
-
-          <footer className="bg-blue-50 py-12">
-            <div className="container mx-auto px-4 text-center text-gray-600">
-              <p>Made with 💗 by RoadsideCoder</p>
-            </div>
-          </footer>
-        </body>
-      </html>
-    </ClerkProvider>
+    <html lang="es" suppressHydrationWarning>
+      <head>
+        <link rel="icon" href="/logo.png" sizes="any" />
+      </head>
+      <body className={`${inter.className}`}>
+        <ThemeProvider>
+          <AuthProvider>
+            <Header />
+            <main className="min-h-screen pt-36 pb-24">{children}</main>
+            <Toaster richColors />
+            <Footer />
+          </AuthProvider>
+        </ThemeProvider>
+      </body>
+    </html>
   );
 }

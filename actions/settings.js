@@ -2,13 +2,14 @@
 
 import { revalidatePath } from "next/cache";
 import { db } from "@/lib/prisma";
-import { auth } from "@clerk/nextjs/server";
+import { createClient } from "@/lib/supabase/server";
 
 // Get dealership info with working hours
 export async function getDealershipInfo() {
   try {
-    const { userId } = await auth();
-    if (!userId) throw new Error("Unauthorized");
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error("Unauthorized");
 
     // Get the dealership record
     let dealership = await db.dealershipInfo.findFirst({
@@ -100,15 +101,16 @@ export async function getDealershipInfo() {
 // Save working hours
 export async function saveWorkingHours(workingHours) {
   try {
-    const { userId } = await auth();
-    if (!userId) throw new Error("Unauthorized");
+    const supabase = await createClient();
+    const { data: { user: authUser } } = await supabase.auth.getUser();
+    if (!authUser) throw new Error("Unauthorized");
 
     // Check if user is admin
-    const user = await db.user.findUnique({
-      where: { clerkUserId: userId },
+    const adminUser = await db.adminUser.findUnique({
+      where: { userId: authUser.id },
     });
 
-    if (!user || user.role !== "ADMIN") {
+    if (!adminUser) {
       throw new Error("Unauthorized: Admin access required");
     }
 
@@ -152,15 +154,16 @@ export async function saveWorkingHours(workingHours) {
 // Get all users
 export async function getUsers() {
   try {
-    const { userId } = await auth();
-    if (!userId) throw new Error("Unauthorized");
+    const supabase = await createClient();
+    const { data: { user: authUser } } = await supabase.auth.getUser();
+    if (!authUser) throw new Error("Unauthorized");
 
     // Check if user is admin
-    const adminUser = await db.user.findUnique({
-      where: { clerkUserId: userId },
+    const adminUser = await db.adminUser.findUnique({
+      where: { userId: authUser.id },
     });
 
-    if (!adminUser || adminUser.role !== "ADMIN") {
+    if (!adminUser) {
       throw new Error("Unauthorized: Admin access required");
     }
 
@@ -185,15 +188,16 @@ export async function getUsers() {
 // Update user role
 export async function updateUserRole(userId, role) {
   try {
-    const { userId: adminId } = await auth();
-    if (!adminId) throw new Error("Unauthorized");
+    const supabase = await createClient();
+    const { data: { user: authUser } } = await supabase.auth.getUser();
+    if (!authUser) throw new Error("Unauthorized");
 
     // Check if user is admin
-    const adminUser = await db.user.findUnique({
-      where: { clerkUserId: adminId },
+    const adminUser = await db.adminUser.findUnique({
+      where: { userId: authUser.id },
     });
 
-    if (!adminUser || adminUser.role !== "ADMIN") {
+    if (!adminUser) {
       throw new Error("Unauthorized: Admin access required");
     }
 

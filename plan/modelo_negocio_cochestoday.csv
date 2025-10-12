@@ -1,0 +1,6 @@
+Concepto,Servicios_Incluidos,Precio,Tiempo_Venta
+Marketplace Básico,"Publicación gratuita, búsqueda, contactos",Gratuito,Variable (usuario gestiona)
+Servicio Concierge Bronze,Recogida + limpieza + fotos + publicación,490€,2-4 semanas
+Servicio Concierge Silver,Bronze + evaluación + reparaciones menores + tasación,690€,1-3 semanas
+Servicio Concierge Gold,Silver + gestión completa + negociación + documentación,990€,1-2 semanas
+Comisión por Venta,Porcentaje sobre precio final de venta,3-5%,N/A

@@ -1,0 +1,9 @@
+Fase,Duración,Actividades Principales
+1. Análisis y Planificación,2 semanas,"Análisis competencia, definición requisitos, arquitectura técnica"
+2. Diseño UX/UI,3 semanas,"Wireframes, prototipos, diseño visual, flujos de usuario"
+3. MVP - Backend,4 semanas,"API REST, autenticación, base de datos, integración Supabase"
+4. MVP - Frontend,3 semanas,"Interfaz React, componentes reutilizables, responsive design"
+5. Integración y Pruebas,2 semanas,"Testing, corrección bugs, optimización rendimiento"
+6. Servicio Concierge,3 semanas,"Sistema recogida, workflow procesos, integración n8n"
+7. Despliegue y Marketing,2 semanas,"Configuración hosting, dominio, SSL, estrategia lanzamiento"
+8. Iteración y Mejoras,Continuo,"Feedback usuarios, nuevas funcionalidades, escalabilidad"

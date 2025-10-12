@@ -3,8 +3,8 @@ import { getCarFilters } from "@/actions/car-listing";
 import { CarListings } from "./_components/cars-listing";
 
 export const metadata = {
-  title: "Cars | Vehiql",
-  description: "Browse and search for your dream car",
+  title: "Coches | CochesToday",
+  description: "Explora y busca tu coche ideal",
 };
 
 export default async function CarsPage() {
@@ -13,7 +13,7 @@ export default async function CarsPage() {
 
   return (
     <div className="container mx-auto px-4 py-12">
-      <h1 className="text-6xl mb-4 gradient-title">Browse Cars</h1>
+      <h1 className="text-6xl mb-4 gradient-title">Explorar Coches</h1>
 
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Filters Section */}

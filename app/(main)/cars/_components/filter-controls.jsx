@@ -16,7 +16,7 @@ export const CarFilterControls = ({
     {
       id: "make",
       title: "Make",
-      options: filters.makes.map((make) => ({ value: make, label: make })),
+      options: filters.makes.map((m) => ({ value: m.id, label: m.name })),
       currentValue: make,
       onChange: (value) => onFilterChange("make", value),
     },
@@ -61,8 +61,8 @@ export const CarFilterControls = ({
           />
         </div>
         <div className="flex items-center justify-between">
-          <div className="font-medium text-sm">$ {priceRange[0]}</div>
-          <div className="font-medium text-sm">$ {priceRange[1]}</div>
+          <div className="font-medium text-sm">€ {priceRange[0]}</div>
+          <div className="font-medium text-sm">€ {priceRange[1]}</div>
         </div>
       </div>
 

@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { useAuth } from "@clerk/nextjs";
+import { useAuth } from "@/components/auth/AuthProvider";
 import { AlertCircle, Calendar } from "lucide-react";
 import {
   Car,
@@ -33,9 +33,9 @@ import {
 } from "@/components/ui/dialog";
 import EmiCalculator from "./emi-calculator";
 
-export function CarDetails({ car, testDriveInfo }) {
+export function CarDetails({ car }) {
   const router = useRouter();
-  const { isSignedIn } = useAuth();
+  const { user } = useAuth();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isWishlisted, setIsWishlisted] = useState(car.wishlisted);
 
@@ -57,14 +57,14 @@ export function CarDetails({ car, testDriveInfo }) {
   // Handle errors with useEffect
   useEffect(() => {
     if (toggleError) {
-      toast.error("Failed to update favorites");
+      toast.error("Error al actualizar favoritos");
     }
   }, [toggleError]);
 
   // Handle save car
   const handleSaveCar = async () => {
-    if (!isSignedIn) {
-      toast.error("Please sign in to save cars");
+    if (!user) {
+      toast.error("Inicia sesión para guardar coches");
       router.push("/sign-in");
       return;
     }
@@ -80,8 +80,8 @@ export function CarDetails({ car, testDriveInfo }) {
     if (navigator.share) {
       navigator
         .share({
-          title: `${car.year} ${car.make} ${car.model}`,
-          text: `Check out this ${car.year} ${car.make} ${car.model} on Vehiql!`,
+          title: `${car.year} ${car.brand?.name || ''} ${car.model?.name || ''}`,
+          text: `¡Mira este ${car.year} ${car.brand?.name || ''} ${car.model?.name || ''} en CochesToday!`,
           url: window.location.href,
         })
         .catch((error) => {
@@ -95,17 +95,7 @@ export function CarDetails({ car, testDriveInfo }) {
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(window.location.href);
-    toast.success("Link copied to clipboard");
-  };
-
-  // Handle book test drive
-  const handleBookTestDrive = () => {
-    if (!isSignedIn) {
-      toast.error("Please sign in to book a test drive");
-      router.push("/sign-in");
-      return;
-    }
-    router.push(`/test-drive/${car.id}`);
+    toast.success("Enlace copiado al portapapeles");
   };
 
   return (
@@ -234,7 +224,7 @@ export function CarDetails({ car, testDriveInfo }) {
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>Vehiql Car Loan Calculator</DialogTitle>
+                <DialogTitle>CochesToday Car Loan Calculator</DialogTitle>
                 <EmiCalculator price={car.price} />
               </DialogHeader>
             </DialogContent>
@@ -384,7 +374,7 @@ export function CarDetails({ car, testDriveInfo }) {
             <div className="flex items-start gap-3">
               <LocateFixed className="h-5 w-5 text-blue-600 mt-1 flex-shrink-0" />
               <div>
-                <h4 className="font-medium">Vehiql Motors</h4>
+                <h4 className="font-medium">CochesToday Motors</h4>
                 <p className="text-gray-600">
                   {testDriveInfo.dealership?.address || "Not Available"}
                 </p>

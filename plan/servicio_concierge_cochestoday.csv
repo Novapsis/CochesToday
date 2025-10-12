@@ -1,0 +1,12 @@
+Servicio,Descripción,Tiempo_Estimado,Precio_Estimado,Proveedor_Sugerido
+Recogida Vehículo,Recogida del vehículo en domicilio del cliente,2 horas,50€,Equipo interno/Partners
+Evaluación Estado,Inspección técnica completa del vehículo,1 hora,30€,Mecánico certificado
+Limpieza Profesional,"Lavado exterior/interior, detailing profesional",3-4 horas,80-120€,Detailing profesional
+Reparaciones Menores,"Arreglos menores de carrocería, mecánica básica",1-3 días,100-500€,Taller de confianza
+Sesión Fotográfica,Fotos profesionales en estudio/exteriores,2 horas,150€,Fotógrafo especializado
+Tasación Profesional,Valoración de mercado por expertos,30 min,40€,Tasador oficial
+Publicación Optimizada,Creación anuncio optimizado con SEO,1 hora,60€,Equipo marketing
+Gestión Visitas,Coordinación citas con compradores potenciales,Variable,Incluido,Agentes comerciales
+Negociación Precio,Negociación en nombre del propietario,Variable,Incluido,Agentes comerciales
+Gestión Documentación,"Trámites transferencia, contratos, seguros",2-3 horas,80€,Gestoría asociada
+Entrega Final,Entrega vehículo y pago al propietario,1 hora,Incluido,Equipo comercial

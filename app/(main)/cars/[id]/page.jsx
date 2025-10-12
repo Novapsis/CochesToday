@@ -8,18 +8,18 @@ export async function generateMetadata({ params }) {
 
   if (!result.success) {
     return {
-      title: "Car Not Found | Vehiql",
-      description: "The requested car could not be found",
+      title: "Coche No Encontrado | CochesToday",
+      description: "El coche solicitado no se pudo encontrar",
     };
   }
 
   const car = result.data;
 
   return {
-    title: `${car.year} ${car.make} ${car.model} | Vehiql`,
-    description: car.description.substring(0, 160),
+    title: `${car.year} ${car.brand?.name || ''} ${car.model?.name || ''} | CochesToday`,
+    description: car.description?.substring(0, 160) || `Coche ${car.year} en venta`,
     openGraph: {
-      images: car.images?.[0] ? [car.images[0]] : [],
+      images: car.images?.[0] ? [{ url: car.images[0].url }] : [],
     },
   };
 }
@@ -36,7 +36,7 @@ export default async function CarDetailsPage({ params }) {
 
   return (
     <div className="container mx-auto px-4 py-12">
-      <CarDetails car={result.data} testDriveInfo={result.data.testDriveInfo} />
+      <CarDetails car={result.data} />
     </div>
   );
 }

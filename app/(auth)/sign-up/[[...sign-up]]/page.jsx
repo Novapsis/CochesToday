@@ -1,5 +1,116 @@
-import { SignUp } from "@clerk/nextjs";
+'use client';
+import { Auth } from '@supabase/auth-ui-react';
+import { ThemeSupa } from '@supabase/auth-ui-shared';
+import { createClient } from '@/lib/supabase';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect } from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
 
-export default function Page() {
-  return <SignUp />;
+export default function SignUpPage() {
+  const supabase = createClient();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirect = searchParams.get('redirect') || '/';
+
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (session) {
+        router.push(redirect);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [supabase, router, redirect]);
+
+  return (
+    <div className="min-h-screen flex flex-col justify-center items-center bg-gradient-to-br from-blue-50 to-indigo-100 px-4">
+      <div className="w-full max-w-xl">
+        {/* Logo */}
+        <div className="text-center mb-8">
+          <Link href="/">
+            <Image
+              src="/logo.png"
+              alt="CochesToday"
+              width={200}
+              height={60}
+              className="mx-auto mb-4"
+            />
+          </Link>
+          <h1 className="text-3xl font-bold text-gray-900">Únete a CochesToday</h1>
+          <p className="text-gray-600 mt-2">Crea tu cuenta y empieza a vender o comprar coches</p>
+        </div>
+
+        {/* Auth Form */}
+        <div className="bg-white rounded-2xl shadow-xl p-8">
+          <Auth
+            supabaseClient={supabase}
+            appearance={{
+              theme: ThemeSupa,
+              variables: {
+                default: {
+                  colors: {
+                    brand: '#3b82f6',
+                    brandAccent: '#2563eb',
+                  },
+                },
+              },
+              className: {
+                button: 'rounded-lg',
+                input: 'rounded-lg',
+              },
+            }}
+            providers={['google']}
+            redirectTo={`${typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000'}/auth/callback?redirect=${encodeURIComponent(redirect)}`}
+            magicLink={true}
+            view="magic_link"
+            showLinks={false}
+            onlyThirdPartyProviders={false}
+            localization={{
+              variables: {
+                sign_in: {
+                  email_label: 'Correo electrónico',
+                  password_label: 'Contraseña',
+                  email_input_placeholder: 'tu@email.com',
+                  password_input_placeholder: 'Tu contraseña',
+                  button_label: 'Iniciar sesión',
+                  loading_button_label: 'Iniciando sesión...',
+                  social_provider_text: 'Continuar con {{provider}}',
+                  link_text: '¿Ya tienes cuenta? Inicia sesión',
+                  confirmation_text: 'Revisa tu email para el enlace de confirmación',
+                },
+                magic_link: {
+                  email_input_label: 'Correo electrónico',
+                  email_input_placeholder: 'tu@email.com',
+                  button_label: 'Enviar enlace mágico',
+                  loading_button_label: 'Enviando enlace...',
+                  link_text: '¿Prefieres usar enlace mágico?',
+                  confirmation_text: '¡Revisa tu email! Te hemos enviado un enlace mágico',
+                },
+                sign_up: {
+                  email_label: 'Correo electrónico',
+                  password_label: 'Contraseña',
+                  email_input_placeholder: 'tu@email.com',
+                  password_input_placeholder: 'Tu contraseña (mínimo 6 caracteres)',
+                  button_label: 'Crear cuenta',
+                  loading_button_label: 'Creando cuenta...',
+                  social_provider_text: 'Continuar con {{provider}}',
+                  link_text: '¿No tienes cuenta? Regístrate',
+                  confirmation_text: '¡Revisa tu email! Te hemos enviado un enlace de confirmación',
+                },
+              },
+            }}
+          />
+        </div>
+
+        {/* Footer */}
+        <p className="text-center text-sm text-gray-600 mt-6">
+          ¿Ya tienes cuenta?{' '}
+          <Link href="/sign-in" className="text-blue-600 hover:text-blue-700 font-semibold">
+            Inicia sesión aquí
+          </Link>
+        </p>
+      </div>
+    </div>
+  );
 }

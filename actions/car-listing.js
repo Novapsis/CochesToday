@@ -1,50 +1,61 @@
-"use server";
+'use server';
 
 import { serializeCarData } from "@/lib/helpers";
 import { db } from "@/lib/prisma";
-import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
+import { cookies } from "next/headers";
+import { createServerClient } from "@/lib/supabase";
+
+// Helper function to get authenticated user from Supabase session
+async function getAuthenticatedUser() {
+  const cookieStore = cookies();
+  const supabase = createServerClient(cookieStore);
+  const { data: { user: supabaseUser } } = await supabase.auth.getUser();
+
+  if (!supabaseUser) {
+    return null;
+  }
+
+  const dbUser = await db.user.findUnique({
+    where: { id: supabaseUser.id },
+    include: {
+      profile: true,
+      adminUser: true,
+    },
+  });
+
+  return dbUser;
+}
+
 
 /**
  * Get simplified filters for the car marketplace
  */
 export async function getCarFilters() {
   try {
-    // Get unique makes
-    const makes = await db.car.findMany({
-      where: { status: "AVAILABLE" },
-      select: { make: true },
-      distinct: ["make"],
-      orderBy: { make: "asc" },
+    // Get all brands that have available cars
+    const brands = await db.carBrand.findMany({
+      where: {
+        cars: {
+          some: { status: "activo" }
+        }
+      },
+      orderBy: { name: "asc" },
+      select: { id: true, name: true }
     });
 
-    // Get unique body types
-    const bodyTypes = await db.car.findMany({
-      where: { status: "AVAILABLE" },
-      select: { bodyType: true },
-      distinct: ["bodyType"],
-      orderBy: { bodyType: "asc" },
+    // Get distinct values for other filters
+    const cars = await db.car.findMany({
+      where: { status: "activo" },
+      select: { bodyType: true, fuelType: true, transmission: true },
     });
 
-    // Get unique fuel types
-    const fuelTypes = await db.car.findMany({
-      where: { status: "AVAILABLE" },
-      select: { fuelType: true },
-      distinct: ["fuelType"],
-      orderBy: { fuelType: "asc" },
-    });
+    const bodyTypes = [...new Set(cars.map(c => c.bodyType).filter(Boolean))].sort();
+    const fuelTypes = [...new Set(cars.map(c => c.fuelType).filter(Boolean))].sort();
+    const transmissions = [...new Set(cars.map(c => c.transmission).filter(Boolean))].sort();
 
-    // Get unique transmissions
-    const transmissions = await db.car.findMany({
-      where: { status: "AVAILABLE" },
-      select: { transmission: true },
-      distinct: ["transmission"],
-      orderBy: { transmission: "asc" },
-    });
-
-    // Get min and max prices using Prisma aggregations
     const priceAggregations = await db.car.aggregate({
-      where: { status: "AVAILABLE" },
+      where: { status: "activo" },
       _min: { price: true },
       _max: { price: true },
     });
@@ -52,10 +63,10 @@ export async function getCarFilters() {
     return {
       success: true,
       data: {
-        makes: makes.map((item) => item.make),
-        bodyTypes: bodyTypes.map((item) => item.bodyType),
-        fuelTypes: fuelTypes.map((item) => item.fuelType),
-        transmissions: transmissions.map((item) => item.transmission),
+        makes: brands.map((b) => ({ id: b.id, name: b.name })),
+        bodyTypes,
+        fuelTypes,
+        transmissions,
         priceRange: {
           min: priceAggregations._min.price
             ? parseFloat(priceAggregations._min.price.toString())
@@ -67,6 +78,7 @@ export async function getCarFilters() {
       },
     };
   } catch (error) {
+    console.error('Error in getCarFilters:', error);
     throw new Error("Error fetching car filters:" + error.message);
   }
 }
@@ -82,93 +94,62 @@ export async function getCars({
   transmission = "",
   minPrice = 0,
   maxPrice = Number.MAX_SAFE_INTEGER,
-  sortBy = "newest", // Options: newest, priceAsc, priceDesc
+  sortBy = "newest",
   page = 1,
   limit = 6,
 }) {
   try {
-    // Get current user if authenticated
-    const { userId } = await auth();
-    let dbUser = null;
+    const dbUser = await getAuthenticatedUser();
 
-    if (userId) {
-      dbUser = await db.user.findUnique({
-        where: { clerkUserId: userId },
-      });
-    }
-
-    // Build where conditions
-    let where = {
-      status: "AVAILABLE",
-    };
-
+    // Build Prisma where using actual schema fields
+    const where = { status: "activo" };
     if (search) {
       where.OR = [
-        { make: { contains: search, mode: "insensitive" } },
-        { model: { contains: search, mode: "insensitive" } },
+        { title: { contains: search, mode: "insensitive" } },
         { description: { contains: search, mode: "insensitive" } },
       ];
     }
-
-    if (make) where.make = { equals: make, mode: "insensitive" };
+    // 'make' carries brandId from UI
+    if (make) where.brandId = make;
     if (bodyType) where.bodyType = { equals: bodyType, mode: "insensitive" };
     if (fuelType) where.fuelType = { equals: fuelType, mode: "insensitive" };
-    if (transmission)
-      where.transmission = { equals: transmission, mode: "insensitive" };
-
-    // Add price range
-    where.price = {
-      gte: parseFloat(minPrice) || 0,
-    };
-
+    if (transmission) where.transmission = { equals: transmission, mode: "insensitive" };
+    where.price = { gte: parseFloat(minPrice) || 0 };
     if (maxPrice && maxPrice < Number.MAX_SAFE_INTEGER) {
       where.price.lte = parseFloat(maxPrice);
     }
 
-    // Calculate pagination
     const skip = (page - 1) * limit;
-
-    // Determine sort order
     let orderBy = {};
     switch (sortBy) {
-      case "priceAsc":
-        orderBy = { price: "asc" };
-        break;
-      case "priceDesc":
-        orderBy = { price: "desc" };
-        break;
-      case "newest":
-      default:
-        orderBy = { createdAt: "desc" };
-        break;
+      case "priceAsc": orderBy = { price: "asc" }; break;
+      case "priceDesc": orderBy = { price: "desc" }; break;
+      default: orderBy = { createdAt: "desc" }; break;
     }
 
-    // Get total count for pagination
     const totalCars = await db.car.count({ where });
-
-    // Execute the main query
     const cars = await db.car.findMany({
       where,
       take: limit,
       skip,
       orderBy,
+      include: {
+        images: true,
+        brand: true,
+        model: true,
+      },
     });
 
-    // If we have a user, check which cars are wishlisted
     let wishlisted = new Set();
     if (dbUser) {
       const savedCars = await db.userSavedCar.findMany({
         where: { userId: dbUser.id },
         select: { carId: true },
       });
-
       wishlisted = new Set(savedCars.map((saved) => saved.carId));
     }
 
-    // Serialize and check wishlist status
-    const serializedCars = cars.map((car) =>
-      serializeCarData(car, wishlisted.has(car.id))
-    );
+    const serializedCars = cars.map((car) => serializeCarData(car, wishlisted.has(car.id)));
 
     return {
       success: true,
@@ -190,70 +171,25 @@ export async function getCars({
  */
 export async function toggleSavedCar(carId) {
   try {
-    const { userId } = await auth();
-    if (!userId) throw new Error("Unauthorized");
+    const user = await getAuthenticatedUser();
+    if (!user) throw new Error("Unauthorized");
 
-    const user = await db.user.findUnique({
-      where: { clerkUserId: userId },
-    });
+    const car = await db.car.findUnique({ where: { id: carId } });
+    if (!car) return { success: false, error: "Car not found" };
 
-    if (!user) throw new Error("User not found");
-
-    // Check if car exists
-    const car = await db.car.findUnique({
-      where: { id: carId },
-    });
-
-    if (!car) {
-      return {
-        success: false,
-        error: "Car not found",
-      };
-    }
-
-    // Check if car is already saved
     const existingSave = await db.userSavedCar.findUnique({
-      where: {
-        userId_carId: {
-          userId: user.id,
-          carId,
-        },
-      },
+      where: { userId_carId: { userId: user.id, carId } },
     });
 
-    // If car is already saved, remove it
     if (existingSave) {
-      await db.userSavedCar.delete({
-        where: {
-          userId_carId: {
-            userId: user.id,
-            carId,
-          },
-        },
-      });
-
+      await db.userSavedCar.delete({ where: { userId_carId: { userId: user.id, carId } } });
       revalidatePath(`/saved-cars`);
-      return {
-        success: true,
-        saved: false,
-        message: "Car removed from favorites",
-      };
+      return { success: true, saved: false, message: "Car removed from favorites" };
+    } else {
+      await db.userSavedCar.create({ data: { userId: user.id, carId } });
+      revalidatePath(`/saved-cars`);
+      return { success: true, saved: true, message: "Car added to favorites" };
     }
-
-    // If car is not saved, add it
-    await db.userSavedCar.create({
-      data: {
-        userId: user.id,
-        carId,
-      },
-    });
-
-    revalidatePath(`/saved-cars`);
-    return {
-      success: true,
-      saved: true,
-      message: "Car added to favorites",
-    };
   } catch (error) {
     throw new Error("Error toggling saved car:" + error.message);
   }
@@ -264,70 +200,26 @@ export async function toggleSavedCar(carId) {
  */
 export async function getCarById(carId) {
   try {
-    // Get current user if authenticated
-    const { userId } = await auth();
-    let dbUser = null;
+    const dbUser = await getAuthenticatedUser();
 
-    if (userId) {
-      dbUser = await db.user.findUnique({
-        where: { clerkUserId: userId },
-      });
-    }
+    const car = await db.car.findUnique({ where: { id: carId } });
+    if (!car) return { success: false, error: "Car not found" };
 
-    // Get car details
-    const car = await db.car.findUnique({
-      where: { id: carId },
-    });
-
-    if (!car) {
-      return {
-        success: false,
-        error: "Car not found",
-      };
-    }
-
-    // Check if car is wishlisted by user
     let isWishlisted = false;
     if (dbUser) {
       const savedCar = await db.userSavedCar.findUnique({
-        where: {
-          userId_carId: {
-            userId: dbUser.id,
-            carId,
-          },
-        },
+        where: { userId_carId: { userId: dbUser.id, carId } },
       });
-
       isWishlisted = !!savedCar;
     }
 
-    // Check if user has already booked a test drive for this car
-    const existingTestDrive = await db.testDriveBooking.findFirst({
-      where: {
-        carId,
-        userId: dbUser.id,
-        status: { in: ["PENDING", "CONFIRMED", "COMPLETED"] },
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
+    const existingTestDrive = dbUser ? await db.testDriveBooking.findFirst({
+      where: { carId, userId: dbUser.id, status: { in: ["PENDING", "CONFIRMED", "COMPLETED"] } },
+      orderBy: { createdAt: "desc" },
+    }) : null;
 
-    let userTestDrive = null;
-
-    if (existingTestDrive) {
-      userTestDrive = {
-        id: existingTestDrive.id,
-        status: existingTestDrive.status,
-        bookingDate: existingTestDrive.bookingDate.toISOString(),
-      };
-    }
-
-    // Get dealership info for test drive availability
     const dealership = await db.dealershipInfo.findFirst({
-      include: {
-        workingHours: true,
-      },
+      include: { workingHours: true },
     });
 
     return {
@@ -335,19 +227,21 @@ export async function getCarById(carId) {
       data: {
         ...serializeCarData(car, isWishlisted),
         testDriveInfo: {
-          userTestDrive,
-          dealership: dealership
-            ? {
-                ...dealership,
-                createdAt: dealership.createdAt.toISOString(),
-                updatedAt: dealership.updatedAt.toISOString(),
-                workingHours: dealership.workingHours.map((hour) => ({
-                  ...hour,
-                  createdAt: hour.createdAt.toISOString(),
-                  updatedAt: hour.updatedAt.toISOString(),
-                })),
-              }
-            : null,
+          userTestDrive: existingTestDrive ? {
+            id: existingTestDrive.id,
+            status: existingTestDrive.status,
+            bookingDate: existingTestDrive.bookingDate.toISOString(),
+          } : null,
+          dealership: dealership ? {
+            ...dealership,
+            createdAt: dealership.createdAt.toISOString(),
+            updatedAt: dealership.updatedAt.toISOString(),
+            workingHours: dealership.workingHours.map((hour) => ({
+              ...hour,
+              createdAt: hour.createdAt.toISOString(),
+              updatedAt: hour.updatedAt.toISOString(),
+            })),
+          } : null,
         },
       },
     };
@@ -359,49 +253,39 @@ export async function getCarById(carId) {
 /**
  * Get user's saved cars
  */
-export async function getSavedCars() {
+export async function getSavedCars(userId = null) {
   try {
-    const { userId } = await auth();
-    if (!userId) {
-      return {
-        success: false,
-        error: "Unauthorized",
-      };
+    let currentUserId = userId;
+
+    // If no userId provided, get from authentication
+    if (!currentUserId) {
+      const user = await getAuthenticatedUser();
+      if (!user) return { success: false, error: "Unauthorized" };
+      currentUserId = user.id;
     }
 
-    // Get the user from our database
-    const user = await db.user.findUnique({
-      where: { clerkUserId: userId },
-    });
-
-    if (!user) {
-      return {
-        success: false,
-        error: "User not found",
-      };
-    }
-
-    // Get saved cars with their details
     const savedCars = await db.userSavedCar.findMany({
-      where: { userId: user.id },
+      where: { userId: currentUserId },
       include: {
-        car: true,
+        car: {
+          include: {
+            images: true,
+            brand: true,
+            model: true,
+          },
+        },
       },
-      orderBy: { savedAt: "desc" },
+      orderBy: { createdAt: "desc" },
     });
 
-    // Extract and format car data
-    const cars = savedCars.map((saved) => serializeCarData(saved.car));
+    const cars = savedCars.map((saved) => ({
+      ...serializeCarData(saved.car, true),
+      savedAt: saved.createdAt.toISOString(),
+    }));
 
-    return {
-      success: true,
-      data: cars,
-    };
+    return { success: true, data: cars };
   } catch (error) {
     console.error("Error fetching saved cars:", error);
-    return {
-      success: false,
-      error: error.message,
-    };
+    return { success: false, error: error.message };
   }
 }

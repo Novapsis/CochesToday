@@ -6,7 +6,6 @@ import { revalidatePath } from "next/cache";
 import { v4 as uuidv4 } from "uuid";
 import { db } from "@/lib/prisma";
 import { createClient } from "@/lib/supabase";
-import { auth } from "@clerk/nextjs/server";
 import { serializeCarData } from "@/lib/helpers";
 
 // Function to convert File to base64
@@ -129,11 +128,15 @@ export async function processCarImageWithAI(file) {
 // Add a car to the database with images
 export async function addCar({ carData, images }) {
   try {
-    const { userId } = await auth();
-    if (!userId) throw new Error("Unauthorized");
+    // Get authenticated user from Supabase
+    const cookieStore = await cookies();
+    const supabase = createClient(cookieStore);
+    const { data: { user: supabaseUser } } = await supabase.auth.getUser();
+    
+    if (!supabaseUser) throw new Error("Unauthorized");
 
     const user = await db.user.findUnique({
-      where: { clerkUserId: userId },
+      where: { id: supabaseUser.id },
     });
 
     if (!user) throw new Error("User not found");
@@ -141,10 +144,6 @@ export async function addCar({ carData, images }) {
     // Create a unique folder name for this car's images
     const carId = uuidv4();
     const folderPath = `cars/${carId}`;
-
-    // Initialize Supabase client for server-side operations
-    const cookieStore = await cookies();
-    const supabase = createClient(cookieStore);
 
     // Upload all images to Supabase storage
     const imageUrls = [];

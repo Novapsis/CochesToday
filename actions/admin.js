@@ -2,23 +2,40 @@
 
 import { serializeCarData } from "@/lib/helpers";
 import { db } from "@/lib/prisma";
-import { auth } from "@clerk/nextjs/server";
+import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 
+/**
+ * Obtiene el usuario actual de Supabase desde el servidor
+ */
+async function getCurrentUser() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  return user;
+}
+
+/**
+ * Verifica si el usuario actual es administrador
+ */
 export async function getAdmin() {
-  const { userId } = await auth();
-  if (!userId) throw new Error("Unauthorized");
+  const supabaseUser = await getCurrentUser();
+  if (!supabaseUser) {
+    return { authorized: false, reason: "no-user" };
+  }
 
   const user = await db.user.findUnique({
-    where: { clerkUserId: userId },
+    where: { id: supabaseUser.id },
+    include: {
+      adminUser: true,
+    },
   });
 
-  // If user not found in our db or not an admin, return not authorized
-  if (!user || user.role !== "ADMIN") {
+  // Si el usuario no existe o no es admin, retornar no autorizado
+  if (!user || !user.adminUser) {
     return { authorized: false, reason: "not-admin" };
   }
 
-  return { authorized: true, user };
+  return { authorized: true, user, isSuper: user.adminUser.isSuper };
 }
 
 /**
@@ -26,15 +43,15 @@ export async function getAdmin() {
  */
 export async function getAdminTestDrives({ search = "", status = "" }) {
   try {
-    const { userId } = await auth();
-    if (!userId) throw new Error("Unauthorized");
+    const supabaseUser = await getCurrentUser();
+    if (!supabaseUser) throw new Error("Unauthorized");
 
     // Verify admin status
-    const user = await db.user.findUnique({
-      where: { clerkUserId: userId },
+    const adminUser = await db.adminUser.findUnique({
+      where: { userId: supabaseUser.id },
     });
 
-    if (!user || user.role !== "ADMIN") {
+    if (!adminUser) {
       throw new Error("Unauthorized access");
     }
 
@@ -120,15 +137,15 @@ export async function getAdminTestDrives({ search = "", status = "" }) {
  */
 export async function updateTestDriveStatus(bookingId, newStatus) {
   try {
-    const { userId } = await auth();
-    if (!userId) throw new Error("Unauthorized");
+    const supabaseUser = await getCurrentUser();
+    if (!supabaseUser) throw new Error("Unauthorized");
 
     // Verify admin status
-    const user = await db.user.findUnique({
-      where: { clerkUserId: userId },
+    const adminUser = await db.adminUser.findUnique({
+      where: { userId: supabaseUser.id },
     });
 
-    if (!user || user.role !== "ADMIN") {
+    if (!adminUser) {
       throw new Error("Unauthorized access");
     }
 
@@ -177,15 +194,15 @@ export async function updateTestDriveStatus(bookingId, newStatus) {
 
 export async function getDashboardData() {
   try {
-    const { userId } = await auth();
-    if (!userId) throw new Error("Unauthorized");
+    const supabaseUser = await getCurrentUser();
+    if (!supabaseUser) throw new Error("Unauthorized");
 
-    // Get user
-    const user = await db.user.findUnique({
-      where: { clerkUserId: userId },
+    // Verify admin status
+    const adminUser = await db.adminUser.findUnique({
+      where: { userId: supabaseUser.id },
     });
 
-    if (!user || user.role !== "ADMIN") {
+    if (!adminUser) {
       return {
         success: false,
         error: "Unauthorized",

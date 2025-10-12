@@ -8,100 +8,197 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
+// ============================================
+// USER MODELS
+// ============================================
+
 model User {
-  id            String             @id @default(uuid())
-  clerkUserId   String             @unique // clerk user id
-  email         String             @unique
-  name          String?
-  imageUrl      String?
-  phone         String?
-  createdAt     DateTime           @default(now())
-  updatedAt     DateTime           @updatedAt
-  role          UserRole           @default(USER)
-  savedCars     UserSavedCar[]
-  testDrives    TestDriveBooking[]
+  id               String           @id @default(uuid())
+  email            String           @unique
+  password         String?          // Para Supabase Auth (puede ser null si usa OAuth)
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+  profile          UserProfile?
+  adminUser        AdminUser?
+  cars             Car[]
+  messagesSent     Message[]        @relation("SentMessages")
+  messagesReceived Message[]        @relation("ReceivedMessages")
+  notifications    Notification[]
+  savedCars        UserSavedCar[]
+  ratingsGiven     UserRating[]     @relation("RatingsGiven")
+  ratingsReceived  UserRating[]     @relation("RatingsReceived")
+  orders           ConciergeOrder[]
+  carViews         CarView[]
 }
 
-enum UserRole {
-  USER
-  ADMIN
+model UserProfile {
+  id        String  @id @default(uuid())
+  userId    String  @unique
+  name      String?
+  phone     String?
+  location  String?
+  avatarUrl String?
+  type      String? // comprador, vendedor, dealership, admin, etc.
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model AdminUser {
+  id      String  @id @default(uuid())
+  userId  String  @unique
+  isSuper Boolean @default(false)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// ============================================
+// CAR MODELS
+// ============================================
+
+model CarBrand {
+  id     String     @id @default(uuid())
+  name   String     @unique
+  models CarModel[]
+  cars   Car[]
+}
+
+model CarModel {
+  id      String   @id @default(uuid())
+  name    String
+  brandId String
+  brand   CarBrand @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  cars    Car[]
+
+  @@unique([brandId, name])
+  @@index([brandId])
 }
 
 model Car {
-  id                String             @id @default(uuid())
-  make              String
-  model             String
-  year              Int
-  price             Decimal            @db.Decimal(10, 2)
-  mileage           Int
-  color             String
-  fuelType          String
-  transmission      String
-  bodyType          String
-  seats             Int?
-  description       String
-  status            CarStatus          @default(AVAILABLE)
-  featured          Boolean            @default(false)
-  images            String[]           // Array of Supabase storage URLs
-  savedBy           UserSavedCar[]
-  testDriveBookings TestDriveBooking[]
-  createdAt         DateTime           @default(now())
-  updatedAt         DateTime           @updatedAt
+  id               String             @id @default(uuid())
+  ownerId          String
+  owner            User               @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  brandId          String
+  brand            CarBrand           @relation(fields: [brandId], references: [id])
+  modelId          String
+  model            CarModel           @relation(fields: [modelId], references: [id])
+  title            String
+  description      String
+  price            Float
+  year             Int
+  mileage          Int
+  location         String
+  color            String?
+  fuelType         String?
+  transmission     String?
+  bodyType         String?
+  seats            Int?
+  status           String             @default("activo") // activo, vendido, reservado
+  featured         Boolean            @default(false)
+  images           CarImage[]
+  savedBy          UserSavedCar[]
+  views            CarView[]
+  conciergeOrders  ConciergeOrder[]
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
 
-  @@index([make, model])
-  @@index([bodyType])
+  @@index([ownerId])
+  @@index([brandId])
+  @@index([modelId])
+  @@index([status])
   @@index([price])
   @@index([year])
-  @@index([status])
-  @@index([fuelType])
   @@index([featured])
 }
 
-enum CarStatus {
-  AVAILABLE
-  UNAVAILABLE
-  SOLD
+model CarImage {
+  id    String @id @default(uuid())
+  carId String
+  url   String
+  car   Car    @relation(fields: [carId], references: [id], onDelete: Cascade)
+
+  @@index([carId])
 }
 
-// Single dealership configuration, if you have multiple dealerships, you can remove default values.
-model DealershipInfo {
-  id           String        @id @default(uuid())
-  name         String        @default("Vehiql Motors")
-  address      String        @default("69 Car Street, Autoville, CA 69420") 
-  phone        String        @default("+1 (555) 123-4567")
-  email        String        @default("contact@vehiql.com")
-  workingHours WorkingHour[]
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
+model CarView {
+  id       String   @id @default(uuid())
+  userId   String?
+  user     User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  carId    String
+  car      Car      @relation(fields: [carId], references: [id], onDelete: Cascade)
+  viewedAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([carId])
+  @@index([viewedAt])
 }
 
-// Working hours configuration
-model WorkingHour {
-  id             String       @id @default(uuid())
-  dealershipId   String
-  dealership     DealershipInfo   @relation(fields: [dealershipId], references: [id], onDelete: Cascade)
-  dayOfWeek      DayOfWeek
-  openTime       String       // Format: "HH:MM" (24-hour)
-  closeTime      String       // Format: "HH:MM" (24-hour)
-  isOpen         Boolean      @default(true)
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
+// ============================================
+// CONCIERGE SERVICE MODELS
+// ============================================
 
-  @@unique([dealershipId, dayOfWeek])
-  @@index([dealershipId])
-  @@index([dayOfWeek])
-  @@index([isOpen])
+model ConciergeOrder {
+  id        String           @id @default(uuid())
+  userId    String
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  carId     String?
+  car       Car?             @relation(fields: [carId], references: [id], onDelete: SetNull)
+  tier      String           // bronze/silver/gold
+  status    String           @default("pendiente") // pendiente, en_proceso, completado, cancelado
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+  steps     ConciergeStep[]
+
+  @@index([userId])
+  @@index([carId])
+  @@index([status])
 }
 
-enum DayOfWeek {
-  MONDAY
-  TUESDAY
-  WEDNESDAY
-  THURSDAY
-  FRIDAY
-  SATURDAY
-  SUNDAY
+model ConciergeStep {
+  id          String          @id @default(uuid())
+  orderId     String
+  order       ConciergeOrder  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  step        String          // recogida, limpieza, revisión, fotos, publicación
+  status      String          @default("pendiente") // pendiente, completado
+  comment     String?
+  completedAt DateTime?
+  createdAt   DateTime        @default(now())
+
+  @@index([orderId])
+  @@index([status])
 }
+
+// ============================================
+// MESSAGING & NOTIFICATIONS
+// ============================================
+
+model Message {
+  id        String   @id @default(uuid())
+  fromId    String
+  from      User     @relation("SentMessages", fields: [fromId], references: [id], onDelete: Cascade)
+  toId      String
+  to        User     @relation("ReceivedMessages", fields: [toId], references: [id], onDelete: Cascade)
+  content   String
+  createdAt DateTime @default(now())
+
+  @@index([fromId])
+  @@index([toId])
+  @@index([createdAt])
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  content   String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([read])
+  @@index([createdAt])
+}
+
+// ============================================
+// USER INTERACTIONS
+// ============================================
 
 model UserSavedCar {
   id        String   @id @default(uuid())
@@ -109,37 +206,24 @@ model UserSavedCar {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   carId     String
   car       Car      @relation(fields: [carId], references: [id], onDelete: Cascade)
-  savedAt   DateTime @default(now())
+  createdAt DateTime @default(now())
 
   @@unique([userId, carId])
   @@index([userId])
   @@index([carId])
 }
 
-model TestDriveBooking {
-  id            String        @id @default(uuid())
-  carId         String
-  car           Car           @relation(fields: [carId], references: [id])
-  userId        String
-  user          User          @relation(fields: [userId], references: [id])
-  bookingDate   DateTime      @db.Date
-  startTime     String        // Format: "HH:MM" (24-hour)
-  endTime       String        // Format: "HH:MM" (24-hour)
-  status        BookingStatus @default(PENDING)
-  notes         String?
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
+model UserRating {
+  id         String   @id @default(uuid())
+  fromUserId String
+  fromUser   User     @relation("RatingsGiven", fields: [fromUserId], references: [id], onDelete: Cascade)
+  toUserId   String
+  toUser     User     @relation("RatingsReceived", fields: [toUserId], references: [id], onDelete: Cascade)
+  rating     Int      // 1-5
+  comment    String?
+  createdAt  DateTime @default(now())
 
-  @@index([carId])
-  @@index([userId])
-  @@index([bookingDate])
-  @@index([status])
-}
-
-enum BookingStatus {
-  PENDING
-  CONFIRMED
-  COMPLETED
-  CANCELLED
-  NO_SHOW
+  @@index([fromUserId])
+  @@index([toUserId])
+  @@index([rating])
 }

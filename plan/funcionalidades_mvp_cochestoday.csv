@@ -1,0 +1,18 @@
+Categoría,Funcionalidad,Prioridad,Tecnología
+Autenticación,Registro con email/contraseña,Alta,Supabase Auth
+Autenticación,Login/Logout,Alta,Supabase Auth
+Autenticación,Recuperación contraseña,Media,Supabase Auth
+Gestión Anuncios,Publicar anuncio coche,Alta,Supabase DB
+Gestión Anuncios,Subir fotos vehículo,Alta,Supabase Storage
+Gestión Anuncios,Editar/eliminar anuncios,Alta,Supabase DB
+Gestión Anuncios,Estado anuncio (activo/vendido),Alta,Supabase DB
+Búsqueda,Búsqueda por marca/modelo,Alta,React + API
+Búsqueda,Filtros precio/año/km,Alta,React + API
+Búsqueda,Geolocalización,Media,Google Maps API
+Comunicación,Sistema mensajería interno,Alta,Supabase Realtime
+Comunicación,Datos contacto vendedor,Alta,Supabase DB
+Panel Usuario,Mis anuncios activos,Alta,React Dashboard
+Panel Usuario,Favoritos,Media,Supabase DB
+Panel Usuario,Perfil usuario,Media,Supabase DB
+Pagos,Pasarela pagos (opcional),Baja,Stripe
+Administración,Panel admin básico,Media,React Admin
