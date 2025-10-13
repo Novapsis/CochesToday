@@ -51,6 +51,7 @@ const Header = ({ isAdminPage = false }) => {
                   <div className="mt-6 flex flex-col gap-3">
                     <Link href="/cars" className="text-sm text-foreground hover:opacity-80">Coches</Link>
                     <Link href="/saved-cars" className="text-sm text-foreground hover:opacity-80">Mis favoritos</Link>
+                    <Link href="/tasacion" className="text-sm text-foreground hover:opacity-80">Tasación profesional</Link>
                     {!user ? (
                       <Link href="/sign-in" className="text-sm text-foreground hover:opacity-80">Iniciar sesión</Link>
                     ) : (
@@ -79,6 +80,11 @@ const Header = ({ isAdminPage = false }) => {
             // Authenticated user links
               user && (
                 <>
+                  <Link href="/tasacion">
+                    <Button variant="ghost" className="hidden md:inline-flex items-center gap-2">
+                      <span>Tasación</span>
+                    </Button>
+                  </Link>
                   <Link href="/saved-cars">
                     <Button variant="ghost" className="flex items-center gap-2">
                       <Heart size={18} />
@@ -107,12 +113,19 @@ const Header = ({ isAdminPage = false }) => {
             {!user ? (
             // Show login if not on admin page and not logged in
               !isAdminPage && (
-                <Link href="/sign-in">
-                  <Button variant="outline" className="flex items-center gap-2">
-                    <LogIn size={18} />
-                    <span>Iniciar sesión</span>
-                  </Button>
-                </Link>
+                <>
+                  <Link href="/tasacion" className="hidden sm:inline-flex">
+                    <Button variant="ghost" className="items-center gap-2">
+                      Tasación
+                    </Button>
+                  </Link>
+                  <Link href="/sign-in">
+                    <Button variant="outline" className="flex items-center gap-2">
+                      <LogIn size={18} />
+                      <span>Iniciar sesión</span>
+                    </Button>
+                  </Link>
+                </>
               )
             ) : (
             // Show avatar dropdown if logged in

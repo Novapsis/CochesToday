@@ -29,6 +29,8 @@ model User {
   ratingsReceived  UserRating[]     @relation("RatingsReceived")
   orders           ConciergeOrder[]
   carViews         CarView[]
+  searchRequests   CarSearchRequest[]
+  aiConversations  AiConversation[]
 }
 
 model UserProfile {
@@ -58,6 +60,7 @@ model CarBrand {
   name   String     @unique
   models CarModel[]
   cars   Car[]
+  createdByUserId String?
 }
 
 model CarModel {
@@ -66,6 +69,7 @@ model CarModel {
   brandId String
   brand   CarBrand @relation(fields: [brandId], references: [id], onDelete: Cascade)
   cars    Car[]
+  createdByUserId String?
 
   @@unique([brandId, name])
   @@index([brandId])
@@ -96,6 +100,7 @@ model Car {
   savedBy          UserSavedCar[]
   views            CarView[]
   conciergeOrders  ConciergeOrder[]
+  searchMatches    CarMatch[]        @relation("CarToCarMatch")
   createdAt        DateTime           @default(now())
   updatedAt        DateTime           @updatedAt
 
@@ -163,6 +168,57 @@ model ConciergeStep {
 
   @@index([orderId])
   @@index([status])
+}
+
+// ============================================
+// SEARCH & AI MODELS
+// ============================================
+
+model CarSearchRequest {
+  id          String      @id @default(dbgenerated("gen_random_uuid()")) @db.Text
+  userId      String      @db.Text
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status      String      @default("pendiente") // pendiente, revisando, encontrado, finalizado, cancelado
+  filters     Json
+  description String?
+  tier        String      @default("Básico")
+  matches     CarMatch[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model CarMatch {
+  id        String            @id @default(dbgenerated("gen_random_uuid()")) @db.Text
+  searchId  String            @db.Text
+  search    CarSearchRequest  @relation(fields: [searchId], references: [id], onDelete: Cascade)
+  carId     String?           @db.Text
+  car       Car?              @relation("CarToCarMatch", fields: [carId], references: [id], onDelete: SetNull)
+  sourceUrl String?
+  aiScore   Float
+  price     Float?
+  matchData Json?
+  createdAt DateTime          @default(now())
+
+  @@index([searchId])
+  @@index([carId])
+}
+
+model AiConversation {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Text
+  userId     String   @db.Text
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages   Json
+  resolved   Boolean  @default(false)
+  ticketId   String?
+  createdAt  DateTime @default(now())
+
+  @@index([userId])
+  @@index([resolved])
+  @@index([createdAt])
 }
 
 // ============================================

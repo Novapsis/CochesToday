@@ -40,7 +40,7 @@ export default function HomePage() {
               Servicio concierge, fotografía profesional y gestión integral para obtener el mejor precio sin complicaciones.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
-              <Link href="/publish" className="w-full sm:w-auto">
+              <Link href="/tasacion" className="w-full sm:w-auto">
                 <Button size="lg" className="w-full sm:w-auto bg-[hsl(var(--accent))] text-[hsl(var(--accent-foreground))] hover:opacity-90">
                   Solicitar valoración gratuita
                 </Button>

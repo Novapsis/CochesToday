@@ -1,0 +1,1229 @@
+{
+  "brands": [
+    {
+      "id": 1,
+      "name": "Abarth",
+      "country": "Italia",
+      "models": [
+        "124 Spider",
+        "500",
+        "595",
+        "695",
+        "Grande Punto",
+        "Punto Evo"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Acura",
+      "country": "Japón",
+      "models": [
+        "ILX",
+        "TLX",
+        "RLX",
+        "MDX",
+        "RDX",
+        "NSX"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Alfa Romeo",
+      "country": "Italia",
+      "models": [
+        "147",
+        "156",
+        "159",
+        "164",
+        "166",
+        "4C",
+        "Brera",
+        "Giulia",
+        "Giulietta",
+        "GT",
+        "GTV",
+        "MiTo",
+        "Spider",
+        "Stelvio",
+        "Tonale"
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Aston Martin",
+      "country": "Reino Unido",
+      "models": [
+        "Cygnet",
+        "DB7",
+        "DB9",
+        "DB11",
+        "DBS",
+        "DBX",
+        "Rapide",
+        "Vanquish",
+        "Vantage",
+        "Virage"
+      ]
+    },
+    {
+      "id": 5,
+      "name": "Audi",
+      "country": "Alemania",
+      "models": [
+        "A1",
+        "A2",
+        "A3",
+        "A4",
+        "A5",
+        "A6",
+        "A7",
+        "A8",
+        "Allroad",
+        "e-tron",
+        "e-tron GT",
+        "Q2",
+        "Q3",
+        "Q4 e-tron",
+        "Q5",
+        "Q7",
+        "Q8",
+        "R8",
+        "RS3",
+        "RS4",
+        "RS5",
+        "RS6",
+        "RS7",
+        "RSQ3",
+        "RSQ8",
+        "S1",
+        "S3",
+        "S4",
+        "S5",
+        "S6",
+        "S7",
+        "S8",
+        "SQ2",
+        "SQ5",
+        "SQ7",
+        "SQ8",
+        "TT",
+        "TTS",
+        "TT RS"
+      ]
+    },
+    {
+      "id": 6,
+      "name": "Bentley",
+      "country": "Reino Unido",
+      "models": [
+        "Arnage",
+        "Azure",
+        "Bentayga",
+        "Brooklands",
+        "Continental",
+        "Flying Spur",
+        "Mulsanne"
+      ]
+    },
+    {
+      "id": 7,
+      "name": "BMW",
+      "country": "Alemania",
+      "models": [
+        "Serie 1",
+        "Serie 2",
+        "Serie 3",
+        "Serie 4",
+        "Serie 5",
+        "Serie 6",
+        "Serie 7",
+        "Serie 8",
+        "i3",
+        "i4",
+        "i7",
+        "i8",
+        "iX",
+        "iX1",
+        "iX3",
+        "M2",
+        "M3",
+        "M4",
+        "M5",
+        "M6",
+        "M8",
+        "X1",
+        "X2",
+        "X3",
+        "X4",
+        "X5",
+        "X6",
+        "X7",
+        "XM",
+        "Z3",
+        "Z4",
+        "Z8"
+      ]
+    },
+    {
+      "id": 8,
+      "name": "Bugatti",
+      "country": "Francia",
+      "models": [
+        "Chiron",
+        "Veyron",
+        "Divo",
+        "Centodieci"
+      ]
+    },
+    {
+      "id": 9,
+      "name": "Buick",
+      "country": "Estados Unidos",
+      "models": [
+        "Enclave",
+        "Encore",
+        "Envision",
+        "LaCrosse",
+        "Regal",
+        "Verano"
+      ]
+    },
+    {
+      "id": 10,
+      "name": "Cadillac",
+      "country": "Estados Unidos",
+      "models": [
+        "ATS",
+        "CT4",
+        "CT5",
+        "CT6",
+        "CTS",
+        "DTS",
+        "Escalade",
+        "SRX",
+        "STS",
+        "XLR",
+        "XT4",
+        "XT5",
+        "XT6"
+      ]
+    },
+    {
+      "id": 11,
+      "name": "Chevrolet",
+      "country": "Estados Unidos",
+      "models": [
+        "Aveo",
+        "Blazer",
+        "Camaro",
+        "Captiva",
+        "Corvette",
+        "Cruze",
+        "Equinox",
+        "Impala",
+        "Malibu",
+        "Silverado",
+        "Sonic",
+        "Spark",
+        "Suburban",
+        "Tahoe",
+        "Trailblazer",
+        "Traverse"
+      ]
+    },
+    {
+      "id": 12,
+      "name": "Chrysler",
+      "country": "Estados Unidos",
+      "models": [
+        "200",
+        "300",
+        "300C",
+        "Pacifica",
+        "PT Cruiser",
+        "Sebring",
+        "Town & Country",
+        "Voyager"
+      ]
+    },
+    {
+      "id": 13,
+      "name": "Citroën",
+      "country": "Francia",
+      "models": [
+        "Berlingo",
+        "C1",
+        "C2",
+        "C3",
+        "C3 Aircross",
+        "C3 Picasso",
+        "C4",
+        "C4 Cactus",
+        "C4 Picasso",
+        "C5",
+        "C5 Aircross",
+        "C5 X",
+        "C6",
+        "C8",
+        "DS3",
+        "DS4",
+        "DS5",
+        "Grand C4 Picasso",
+        "Jumper",
+        "Jumpy",
+        "Nemo",
+        "SpaceTourer",
+        "Xantia",
+        "Xsara"
+      ]
+    },
+    {
+      "id": 14,
+      "name": "Cupra",
+      "country": "España",
+      "models": [
+        "Ateca",
+        "Born",
+        "Formentor",
+        "León",
+        "Tavascan"
+      ]
+    },
+    {
+      "id": 15,
+      "name": "Dacia",
+      "country": "Rumania",
+      "models": [
+        "Dokker",
+        "Duster",
+        "Logan",
+        "Sandero",
+        "Spring"
+      ]
+    },
+    {
+      "id": 16,
+      "name": "Daewoo",
+      "country": "Corea del Sur",
+      "models": [
+        "Kalos",
+        "Lacetti",
+        "Lanos",
+        "Matiz",
+        "Nexia",
+        "Nubira",
+        "Rezzo",
+        "Tacuma"
+      ]
+    },
+    {
+      "id": 17,
+      "name": "Dodge",
+      "country": "Estados Unidos",
+      "models": [
+        "Challenger",
+        "Charger",
+        "Durango",
+        "Grand Caravan",
+        "Journey",
+        "Ram",
+        "Viper"
+      ]
+    },
+    {
+      "id": 18,
+      "name": "DS",
+      "country": "Francia",
+      "models": [
+        "DS 3",
+        "DS 4",
+        "DS 7",
+        "DS 9"
+      ]
+    },
+    {
+      "id": 19,
+      "name": "Ferrari",
+      "country": "Italia",
+      "models": [
+        "288 GTO",
+        "348",
+        "355",
+        "360",
+        "430",
+        "458",
+        "488",
+        "550",
+        "575M",
+        "599",
+        "612",
+        "California",
+        "Enzo",
+        "F8",
+        "F12",
+        "F40",
+        "F50",
+        "FF",
+        "GTC4Lusso",
+        "LaFerrari",
+        "Portofino",
+        "Roma",
+        "SF90",
+        "Testarossa"
+      ]
+    },
+    {
+      "id": 20,
+      "name": "Fiat",
+      "country": "Italia",
+      "models": [
+        "124 Spider",
+        "500",
+        "500C",
+        "500L",
+        "500X",
+        "Barchetta",
+        "Bravo",
+        "Croma",
+        "Doblò",
+        "Ducato",
+        "Fiorino",
+        "Freemont",
+        "Grande Punto",
+        "Idea",
+        "Linea",
+        "Multipla",
+        "Panda",
+        "Punto",
+        "Qubo",
+        "Scudo",
+        "Sedici",
+        "Stilo",
+        "Tipo",
+        "Ulysse"
+      ]
+    },
+    {
+      "id": 21,
+      "name": "Ford",
+      "country": "Estados Unidos",
+      "models": [
+        "B-MAX",
+        "C-MAX",
+        "EcoSport",
+        "Edge",
+        "Escape",
+        "Expedition",
+        "Explorer",
+        "F-150",
+        "Fiesta",
+        "Focus",
+        "Fusion",
+        "Galaxy",
+        "Ka",
+        "Kuga",
+        "Mondeo",
+        "Mustang",
+        "Mustang Mach-E",
+        "Puma",
+        "Ranger",
+        "S-MAX",
+        "Taurus",
+        "Tourneo",
+        "Transit"
+      ]
+    },
+    {
+      "id": 22,
+      "name": "Genesis",
+      "country": "Corea del Sur",
+      "models": [
+        "G70",
+        "G80",
+        "G90",
+        "GV70",
+        "GV80"
+      ]
+    },
+    {
+      "id": 23,
+      "name": "Honda",
+      "country": "Japón",
+      "models": [
+        "Accord",
+        "City",
+        "Civic",
+        "CR-V",
+        "CR-Z",
+        "Crosstour",
+        "Element",
+        "Fit",
+        "HR-V",
+        "Insight",
+        "Jazz",
+        "Legend",
+        "Odyssey",
+        "Passport",
+        "Pilot",
+        "Prelude",
+        "Ridgeline",
+        "S2000"
+      ]
+    },
+    {
+      "id": 24,
+      "name": "Hyundai",
+      "country": "Corea del Sur",
+      "models": [
+        "Accent",
+        "Atos",
+        "Azera",
+        "Coupe",
+        "Elantra",
+        "Genesis",
+        "Getz",
+        "Grand Santa Fe",
+        "i10",
+        "i20",
+        "i30",
+        "i40",
+        "Ioniq",
+        "ix20",
+        "ix35",
+        "Kona",
+        "Matrix",
+        "Santa Fe",
+        "Sonata",
+        "Terracan",
+        "Tucson",
+        "Veloster",
+        "Veracruz"
+      ]
+    },
+    {
+      "id": 25,
+      "name": "Infiniti",
+      "country": "Japón",
+      "models": [
+        "EX",
+        "FX",
+        "G",
+        "M",
+        "Q30",
+        "Q50",
+        "Q60",
+        "Q70",
+        "QX30",
+        "QX50",
+        "QX56",
+        "QX60",
+        "QX70",
+        "QX80"
+      ]
+    },
+    {
+      "id": 26,
+      "name": "Isuzu",
+      "country": "Japón",
+      "models": [
+        "D-Max",
+        "Trooper"
+      ]
+    },
+    {
+      "id": 27,
+      "name": "Jaguar",
+      "country": "Reino Unido",
+      "models": [
+        "E-Pace",
+        "F-Pace",
+        "F-TYPE",
+        "I-Pace",
+        "S-Type",
+        "X-Type",
+        "XE",
+        "XF",
+        "XJ",
+        "XK",
+        "XKR"
+      ]
+    },
+    {
+      "id": 28,
+      "name": "Jeep",
+      "country": "Estados Unidos",
+      "models": [
+        "Cherokee",
+        "Commander",
+        "Compass",
+        "Grand Cherokee",
+        "Liberty",
+        "Patriot",
+        "Renegade",
+        "Wrangler"
+      ]
+    },
+    {
+      "id": 29,
+      "name": "Kia",
+      "country": "Corea del Sur",
+      "models": [
+        "Carens",
+        "Carnival",
+        "Ceed",
+        "Cerato",
+        "Magentis",
+        "Niro",
+        "Optima",
+        "Picanto",
+        "ProCeed",
+        "Rio",
+        "Sorento",
+        "Soul",
+        "Sportage",
+        "Stinger",
+        "Stonic",
+        "Venga",
+        "XCeed"
+      ]
+    },
+    {
+      "id": 30,
+      "name": "Lamborghini",
+      "country": "Italia",
+      "models": [
+        "Aventador",
+        "Countach",
+        "Diablo",
+        "Gallardo",
+        "Huracán",
+        "Murciélago",
+        "Reventon",
+        "Urus"
+      ]
+    },
+    {
+      "id": 31,
+      "name": "Lancia",
+      "country": "Italia",
+      "models": [
+        "Delta",
+        "Musa",
+        "Phedra",
+        "Thema",
+        "Thesis",
+        "Voyager",
+        "Ypsilon",
+        "Zeta"
+      ]
+    },
+    {
+      "id": 32,
+      "name": "Land Rover",
+      "country": "Reino Unido",
+      "models": [
+        "Defender",
+        "Discovery",
+        "Discovery Sport",
+        "Freelander",
+        "Range Rover",
+        "Range Rover Evoque",
+        "Range Rover Sport",
+        "Range Rover Velar"
+      ]
+    },
+    {
+      "id": 33,
+      "name": "Lexus",
+      "country": "Japón",
+      "models": [
+        "CT",
+        "ES",
+        "GS",
+        "GX",
+        "IS",
+        "LC",
+        "LS",
+        "LX",
+        "NX",
+        "RC",
+        "RX",
+        "SC",
+        "UX"
+      ]
+    },
+    {
+      "id": 34,
+      "name": "Lincoln",
+      "country": "Estados Unidos",
+      "models": [
+        "Aviator",
+        "Continental",
+        "Corsair",
+        "MKC",
+        "MKS",
+        "MKT",
+        "MKX",
+        "MKZ",
+        "Navigator",
+        "Nautilus"
+      ]
+    },
+    {
+      "id": 35,
+      "name": "Lotus",
+      "country": "Reino Unido",
+      "models": [
+        "Elise",
+        "Esprit",
+        "Europa",
+        "Evora",
+        "Exige"
+      ]
+    },
+    {
+      "id": 36,
+      "name": "Maserati",
+      "country": "Italia",
+      "models": [
+        "3200 GT",
+        "4200",
+        "Coupe",
+        "Ghibli",
+        "GranTurismo",
+        "Levante",
+        "MC20",
+        "Quattroporte",
+        "Spyder"
+      ]
+    },
+    {
+      "id": 37,
+      "name": "Maybach",
+      "country": "Alemania",
+      "models": [
+        "57",
+        "62",
+        "Clase S",
+        "GLS"
+      ]
+    },
+    {
+      "id": 38,
+      "name": "Mazda",
+      "country": "Japón",
+      "models": [
+        "2",
+        "3",
+        "5",
+        "6",
+        "626",
+        "CX-3",
+        "CX-30",
+        "CX-5",
+        "CX-60",
+        "CX-7",
+        "CX-9",
+        "MPV",
+        "MX-5",
+        "Premacy",
+        "RX-7",
+        "RX-8",
+        "Tribute"
+      ]
+    },
+    {
+      "id": 39,
+      "name": "McLaren",
+      "country": "Reino Unido",
+      "models": [
+        "540C",
+        "570S",
+        "600LT",
+        "650S",
+        "675LT",
+        "720S",
+        "765LT",
+        "Artura",
+        "F1",
+        "MP4-12C",
+        "P1",
+        "Senna"
+      ]
+    },
+    {
+      "id": 40,
+      "name": "Mercedes-Benz",
+      "country": "Alemania",
+      "models": [
+        "Clase A",
+        "Clase B",
+        "Clase C",
+        "Clase CLA",
+        "Clase CLS",
+        "Clase E",
+        "Clase G",
+        "Clase GLA",
+        "Clase GLB",
+        "Clase GLC",
+        "Clase GLE",
+        "Clase GLS",
+        "Clase ML",
+        "Clase R",
+        "Clase S",
+        "Clase SL",
+        "Clase SLK",
+        "Clase SLR",
+        "EQA",
+        "EQB",
+        "EQC",
+        "EQE",
+        "EQS",
+        "EQV",
+        "Marco Polo",
+        "Maybach",
+        "Sprinter",
+        "Vaneo",
+        "Viano",
+        "Vito"
+      ]
+    },
+    {
+      "id": 41,
+      "name": "MG",
+      "country": "Reino Unido",
+      "models": [
+        "3",
+        "5",
+        "6",
+        "HS",
+        "TF",
+        "ZR",
+        "ZS",
+        "ZT"
+      ]
+    },
+    {
+      "id": 42,
+      "name": "MINI",
+      "country": "Reino Unido",
+      "models": [
+        "Clubman",
+        "Convertible",
+        "Cooper",
+        "Countryman",
+        "Paceman",
+        "Roadster"
+      ]
+    },
+    {
+      "id": 43,
+      "name": "Mitsubishi",
+      "country": "Japón",
+      "models": [
+        "3000GT",
+        "ASX",
+        "Carisma",
+        "Colt",
+        "Eclipse",
+        "Eclipse Cross",
+        "Galant",
+        "Grandis",
+        "L200",
+        "Lancer",
+        "Montero",
+        "Outlander",
+        "Pajero",
+        "Space Star"
+      ]
+    },
+    {
+      "id": 44,
+      "name": "Morgan",
+      "country": "Reino Unido",
+      "models": [
+        "3 Wheeler",
+        "4/4",
+        "Aero",
+        "Plus 4",
+        "Plus 8",
+        "Roadster"
+      ]
+    },
+    {
+      "id": 45,
+      "name": "Nissan",
+      "country": "Japón",
+      "models": [
+        "350Z",
+        "370Z",
+        "Almera",
+        "Altima",
+        "Armada",
+        "Cube",
+        "Frontier",
+        "GT-R",
+        "Juke",
+        "Kicks",
+        "Leaf",
+        "Maxima",
+        "Micra",
+        "Murano",
+        "Navara",
+        "Note",
+        "NV200",
+        "Pathfinder",
+        "Patrol",
+        "Pulsar",
+        "Qashqai",
+        "Sentra",
+        "Terrano",
+        "Tiida",
+        "Titan",
+        "Versa",
+        "X-Terra",
+        "X-Trail"
+      ]
+    },
+    {
+      "id": 46,
+      "name": "Opel",
+      "country": "Alemania",
+      "models": [
+        "Adam",
+        "Ampera",
+        "Antara",
+        "Astra",
+        "Cascada",
+        "Combo",
+        "Corsa",
+        "Crossland",
+        "Grandland",
+        "Insignia",
+        "Meriva",
+        "Mokka",
+        "Signum",
+        "Tigra",
+        "Vectra",
+        "Vivaro",
+        "Zafira"
+      ]
+    },
+    {
+      "id": 47,
+      "name": "Peugeot",
+      "country": "Francia",
+      "models": [
+        "1007",
+        "107",
+        "108",
+        "2008",
+        "206",
+        "207",
+        "208",
+        "3008",
+        "301",
+        "306",
+        "307",
+        "308",
+        "4007",
+        "4008",
+        "406",
+        "407",
+        "5008",
+        "508",
+        "607",
+        "807",
+        "Bipper",
+        "Boxer",
+        "Expert",
+        "iOn",
+        "Partner",
+        "RCZ"
+      ]
+    },
+    {
+      "id": 48,
+      "name": "Porsche",
+      "country": "Alemania",
+      "models": [
+        "718 Boxster",
+        "718 Cayman",
+        "911",
+        "924",
+        "928",
+        "944",
+        "968",
+        "Cayenne",
+        "Macan",
+        "Panamera",
+        "Taycan"
+      ]
+    },
+    {
+      "id": 49,
+      "name": "Ram",
+      "country": "Estados Unidos",
+      "models": [
+        "1500",
+        "2500",
+        "3500",
+        "ProMaster"
+      ]
+    },
+    {
+      "id": 50,
+      "name": "Renault",
+      "country": "Francia",
+      "models": [
+        "Captur",
+        "Clio",
+        "Espace",
+        "Fluence",
+        "Grand Scenic",
+        "Kadjar",
+        "Kangoo",
+        "Koleos",
+        "Laguna",
+        "Master",
+        "Megane",
+        "Modus",
+        "Scenic",
+        "Talisman",
+        "Thalia",
+        "Trafic",
+        "Twingo",
+        "Twizy",
+        "Vel Satis",
+        "Wind",
+        "Zoe"
+      ]
+    },
+    {
+      "id": 51,
+      "name": "Rolls-Royce",
+      "country": "Reino Unido",
+      "models": [
+        "Cullinan",
+        "Dawn",
+        "Ghost",
+        "Phantom",
+        "Silver Seraph",
+        "Wraith"
+      ]
+    },
+    {
+      "id": 52,
+      "name": "Saab",
+      "country": "Suecia",
+      "models": [
+        "9-3",
+        "9-5",
+        "9-7X"
+      ]
+    },
+    {
+      "id": 53,
+      "name": "SEAT",
+      "country": "España",
+      "models": [
+        "Alhambra",
+        "Altea",
+        "Arona",
+        "Ateca",
+        "Córdoba",
+        "Exeo",
+        "Ibiza",
+        "León",
+        "Marbella",
+        "Mii",
+        "Tarraco",
+        "Toledo"
+      ]
+    },
+    {
+      "id": 54,
+      "name": "Škoda",
+      "country": "República Checa",
+      "models": [
+        "Citigo",
+        "Fabia",
+        "Kamiq",
+        "Karoq",
+        "Kodiaq",
+        "Octavia",
+        "Rapid",
+        "Roomster",
+        "Scala",
+        "Superb",
+        "Yeti"
+      ]
+    },
+    {
+      "id": 55,
+      "name": "Smart",
+      "country": "Alemania",
+      "models": [
+        "Cabrio",
+        "City-Coupe",
+        "Crossblade",
+        "EQfortwo",
+        "Forfour",
+        "Fortwo",
+        "Roadster"
+      ]
+    },
+    {
+      "id": 56,
+      "name": "Subaru",
+      "country": "Japón",
+      "models": [
+        "Ascent",
+        "BRZ",
+        "Forester",
+        "Impreza",
+        "Legacy",
+        "Outback",
+        "Tribeca",
+        "WRX",
+        "XV"
+      ]
+    },
+    {
+      "id": 57,
+      "name": "Suzuki",
+      "country": "Japón",
+      "models": [
+        "Alto",
+        "Baleno",
+        "Grand Vitara",
+        "Ignis",
+        "Jimny",
+        "Kizashi",
+        "Liana",
+        "S-Cross",
+        "Splash",
+        "Swift",
+        "SX4",
+        "Vitara",
+        "Wagon R+"
+      ]
+    },
+    {
+      "id": 58,
+      "name": "Tesla",
+      "country": "Estados Unidos",
+      "models": [
+        "Cybertruck",
+        "Model 3",
+        "Model S",
+        "Model X",
+        "Model Y",
+        "Roadster"
+      ]
+    },
+    {
+      "id": 59,
+      "name": "Toyota",
+      "country": "Japón",
+      "models": [
+        "4Runner",
+        "Auris",
+        "Avalon",
+        "Avensis",
+        "Aygo",
+        "bZ4X",
+        "C-HR",
+        "Camry",
+        "Celica",
+        "Corolla",
+        "Corolla Cross",
+        "FJ Cruiser",
+        "Fortuner",
+        "GT86",
+        "Highlander",
+        "Hilux",
+        "Land Cruiser",
+        "Matrix",
+        "MR2",
+        "Prado",
+        "Previa",
+        "Prius",
+        "RAV4",
+        "Sequoia",
+        "Sienna",
+        "Supra",
+        "Tacoma",
+        "Tundra",
+        "Urban Cruiser",
+        "Venza",
+        "Verso",
+        "Yaris",
+        "Yaris Cross"
+      ]
+    },
+    {
+      "id": 60,
+      "name": "Volkswagen",
+      "country": "Alemania",
+      "models": [
+        "Amarok",
+        "Arteon",
+        "Atlas",
+        "Beetle",
+        "Bora",
+        "Caddy",
+        "California",
+        "CC",
+        "Crafter",
+        "Eos",
+        "Fox",
+        "Golf",
+        "ID.3",
+        "ID.4",
+        "ID.5",
+        "ID.7",
+        "Jetta",
+        "Lupo",
+        "Multivan",
+        "New Beetle",
+        "Passat",
+        "Phaeton",
+        "Polo",
+        "Routan",
+        "Scirocco",
+        "Sharan",
+        "T-Cross",
+        "T-Roc",
+        "Tiguan",
+        "Touareg",
+        "Touran",
+        "Transporter",
+        "Up!",
+        "Vento"
+      ]
+    },
+    {
+      "id": 61,
+      "name": "Volvo",
+      "country": "Suecia",
+      "models": [
+        "C30",
+        "C70",
+        "S40",
+        "S60",
+        "S80",
+        "S90",
+        "V40",
+        "V50",
+        "V60",
+        "V70",
+        "V90",
+        "XC40",
+        "XC60",
+        "XC70",
+        "XC90"
+      ]
+    }
+  ]
+}

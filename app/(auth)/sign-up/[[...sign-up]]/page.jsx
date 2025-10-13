@@ -24,92 +24,178 @@ export default function SignUpPage() {
   }, [supabase, router, redirect]);
 
   return (
-    <div className="min-h-screen flex flex-col justify-center items-center bg-gradient-to-br from-blue-50 to-indigo-100 px-4">
-      <div className="w-full max-w-xl">
-        {/* Logo */}
-        <div className="text-center mb-8">
-          <Link href="/">
-            <Image
-              src="/logo.png"
-              alt="CochesToday"
-              width={200}
-              height={60}
-              className="mx-auto mb-4"
-            />
-          </Link>
-          <h1 className="text-3xl font-bold text-gray-900">Únete a CochesToday</h1>
-          <p className="text-gray-600 mt-2">Crea tu cuenta y empieza a vender o comprar coches</p>
-        </div>
+    <div className="min-h-screen w-full bg-background text-foreground flex flex-col lg:flex-row transition-colors">
+      {/* Left panel */}
+      <div className="hidden lg:flex lg:w-1/2 xl:w-2/5 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-[#1f3964] via-[#1b3154] to-[#111d38] dark:from-[#050a19] dark:via-[#081124] dark:to-[#03060d]" />
+        <div className="absolute inset-0 bg-[url('/logo/pattern.svg')] opacity-5 mix-blend-screen" />
+        <div className="relative z-10 flex flex-col justify-between px-12 py-14 text-accent-foreground">
+          <div className="max-w-md ml-10">
+            <Link href="/">
+              <Image
+                src="/logo.png"
+                alt="CochesToday"
+                width={220}
+                height={68}
+                className="mb-12"
+              />
+            </Link>
+            <h1 className="text-4xl font-semibold leading-tight tracking-tight">
+              Únete al ecosistema premium de CochesToday
+            </h1>
+            <p className="mt-6 text-accent-foreground/80 text-lg">
+              Publica tu coche con nuestro concierge o deja que nuestros expertos encuentren el vehículo perfecto para ti.
+            </p>
+          </div>
 
-        {/* Auth Form */}
-        <div className="bg-white rounded-2xl shadow-xl p-8">
-          <Auth
-            supabaseClient={supabase}
-            appearance={{
-              theme: ThemeSupa,
-              variables: {
-                default: {
-                  colors: {
-                    brand: '#3b82f6',
-                    brandAccent: '#2563eb',
+          <div className="space-y-5 max-w-md ml-10">
+            <div className="rounded-3xl bg-white/95 text-foreground shadow-2xl p-6 dark:bg-neutral-900/85">
+              <p className="text-xs uppercase tracking-[0.35em] text-foreground/50 dark:text-foreground/60">Beneficios exclusivos</p>
+              <ul className="mt-4 space-y-2 text-sm leading-relaxed text-foreground/80 dark:text-foreground/70">
+                <li className="flex gap-2">
+                  <span className="text-accent font-semibold">•</span> Concierge 360º con reportajes y negociación profesional
+                </li>
+                <li className="flex gap-2">
+                  <span className="text-accent font-semibold">•</span> IA que rastrea el mercado y te sugiere oportunidades
+                </li>
+                <li className="flex gap-2">
+                  <span className="text-accent font-semibold">•</span> Panel unificado con notificaciones en tiempo real
+                </li>
+              </ul>
+            </div>
+
+            <div className="rounded-3xl bg-white text-foreground shadow-2xl border border-accent/20 p-6 dark:bg-neutral-900/90">
+              <h3 className="text-lg font-semibold">Aumenta el valor de tu coche</h3>
+              <p className="text-sm text-foreground/70 mt-3 dark:text-foreground/60">
+                Conoce nuestros planes concierge y descubre cómo mejoramos la presentación y el precio de venta de tu vehículo.
+              </p>
+              <Link
+                href="/contact"
+                className="mt-4 inline-flex items-center justify-center rounded-full bg-accent text-accent-foreground px-5 py-2 text-sm font-medium hover:bg-accent/90 transition"
+              >
+                Solicitar información concierge
+              </Link>
+            </div>
+
+            <div className="rounded-3xl border border-white/50 bg-white/85 text-foreground shadow-xl p-6 dark:bg-neutral-900/80 dark:border-white/10">
+              <h3 className="text-lg font-semibold">Presupuesto y diagnóstico profesional</h3>
+              <p className="text-sm text-foreground/70 mt-3 dark:text-foreground/60">
+                Incluimos revisión técnica con escaneo completo para que publiques con confianza y transparencia.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Right panel */}
+      <div className="flex-1 flex items-center justify-center px-6 py-14">
+        <div className="w-full max-w-lg">
+          <div className="text-center mb-10 lg:hidden">
+            <Link href="/">
+              <Image
+                src="/logo.png"
+                alt="CochesToday"
+                width={180}
+                height={56}
+                className="mx-auto mb-6"
+              />
+            </Link>
+            <h2 className="text-3xl font-semibold">Crea tu cuenta</h2>
+            <p className="text-foreground/70 mt-2">
+              Accede a herramientas premium para vender o encontrar tu próximo coche.
+            </p>
+          </div>
+
+          <div className="border border-accent/25 rounded-3xl bg-card/95 shadow-lg p-10">
+            <Auth
+              supabaseClient={supabase}
+              appearance={{
+                theme: ThemeSupa,
+                variables: {
+                  default: {
+                    colors: {
+                      brand: '#2f4a7c',
+                      brandAccent: '#1f3c88',
+                      inputBackground: '#ffffff',
+                      inputText: '#131313',
+                    },
                   },
                 },
-              },
-              className: {
-                button: 'rounded-lg',
-                input: 'rounded-lg',
-              },
-            }}
-            providers={['google']}
-            redirectTo={`${typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000'}/auth/callback?redirect=${encodeURIComponent(redirect)}`}
-            magicLink={true}
-            view="magic_link"
-            showLinks={false}
-            onlyThirdPartyProviders={false}
-            localization={{
-              variables: {
-                sign_in: {
-                  email_label: 'Correo electrónico',
-                  password_label: 'Contraseña',
-                  email_input_placeholder: 'tu@email.com',
-                  password_input_placeholder: 'Tu contraseña',
-                  button_label: 'Iniciar sesión',
-                  loading_button_label: 'Iniciando sesión...',
-                  social_provider_text: 'Continuar con {{provider}}',
-                  link_text: '¿Ya tienes cuenta? Inicia sesión',
-                  confirmation_text: 'Revisa tu email para el enlace de confirmación',
+                className: {
+                  button:
+                    'rounded-xl text-sm font-medium tracking-wide h-11 bg-accent text-accent-foreground hover:bg-accent/90 transition',
+                  input:
+                    'rounded-xl h-11 bg-white text-[#161616] border border-accent/30 focus:border-accent focus:ring-0 placeholder:text-foreground/40 dark:bg-neutral-900 dark:text-foreground',
+                  label: 'text-sm font-medium text-foreground/80 dark:text-foreground/70',
+                  container: 'space-y-4',
                 },
-                magic_link: {
-                  email_input_label: 'Correo electrónico',
-                  email_input_placeholder: 'tu@email.com',
-                  button_label: 'Enviar enlace mágico',
-                  loading_button_label: 'Enviando enlace...',
-                  link_text: '¿Prefieres usar enlace mágico?',
-                  confirmation_text: '¡Revisa tu email! Te hemos enviado un enlace mágico',
+              }}
+              providers={['google']}
+              redirectTo={`${typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000'}/auth/callback?redirect=${encodeURIComponent(redirect)}`}
+              magicLink={true}
+              view="magic_link"
+              showLinks={false}
+              onlyThirdPartyProviders={false}
+              localization={{
+                variables: {
+                  sign_in: {
+                    email_label: 'Correo electrónico',
+                    password_label: 'Contraseña',
+                    email_input_placeholder: 'tu@email.com',
+                    password_input_placeholder: 'Tu contraseña',
+                    button_label: 'Iniciar sesión',
+                    loading_button_label: 'Iniciando sesión...',
+                    social_provider_text: 'Continuar con {{provider}}',
+                    link_text: '¿Ya tienes cuenta? Inicia sesión',
+                    confirmation_text: 'Revisa tu email para el enlace de confirmación',
+                  },
+                  magic_link: {
+                    email_input_label: 'Correo electrónico',
+                    email_input_placeholder: 'tu@email.com',
+                    button_label: 'Enviar enlace mágico',
+                    loading_button_label: 'Enviando enlace...',
+                    link_text: '¿Prefieres usar enlace mágico?',
+                    confirmation_text: '¡Revisa tu email! Te hemos enviado un enlace mágico',
+                  },
+                  sign_up: {
+                    email_label: 'Correo electrónico',
+                    password_label: 'Contraseña',
+                    email_input_placeholder: 'tu@email.com',
+                    password_input_placeholder: 'Tu contraseña (mínimo 6 caracteres)',
+                    button_label: 'Crear cuenta',
+                    loading_button_label: 'Creando cuenta...',
+                    social_provider_text: 'Continuar con {{provider}}',
+                    link_text: '¿No tienes cuenta? Regístrate',
+                    confirmation_text: '¡Revisa tu email! Te hemos enviado un enlace de confirmación',
+                  },
                 },
-                sign_up: {
-                  email_label: 'Correo electrónico',
-                  password_label: 'Contraseña',
-                  email_input_placeholder: 'tu@email.com',
-                  password_input_placeholder: 'Tu contraseña (mínimo 6 caracteres)',
-                  button_label: 'Crear cuenta',
-                  loading_button_label: 'Creando cuenta...',
-                  social_provider_text: 'Continuar con {{provider}}',
-                  link_text: '¿No tienes cuenta? Regístrate',
-                  confirmation_text: '¡Revisa tu email! Te hemos enviado un enlace de confirmación',
-                },
-              },
-            }}
-          />
-        </div>
+              }}
+            />
+          </div>
 
-        {/* Footer */}
-        <p className="text-center text-sm text-gray-600 mt-6">
-          ¿Ya tienes cuenta?{' '}
-          <Link href="/sign-in" className="text-blue-600 hover:text-blue-700 font-semibold">
-            Inicia sesión aquí
-          </Link>
-        </p>
+          <p className="text-center text-sm text-foreground/70 mt-6">
+            ¿Ya tienes cuenta?{' '}
+            <Link href="/sign-in" className="text-accent font-semibold hover:text-accent/80">
+              Accede aquí
+            </Link>
+          </p>
+
+          {/* Mobile info cards */}
+          <div className="lg:hidden mt-10 space-y-4">
+            <div className="rounded-3xl bg-white text-foreground shadow-2xl border border-accent/20 p-6 dark:bg-neutral-900/90">
+              <h3 className="text-base font-semibold">Impulsa la venta de tu coche</h3>
+              <p className="text-sm text-foreground/70 mt-2 dark:text-foreground/60">
+                Nuestro concierge prepara tu coche de principio a fin para que consigas la mejor oferta.
+              </p>
+            </div>
+            <div className="rounded-3xl border border-accent/20 bg-white/80 text-foreground p-6 shadow dark:bg-neutral-900/80">
+              <h3 className="text-base font-semibold">Presupuesto con revisión</h3>
+              <p className="text-sm text-foreground/70 mt-2 dark:text-foreground/60">
+                Revisiones técnicas y escaneos detallados para publicar con total tranquilidad.
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

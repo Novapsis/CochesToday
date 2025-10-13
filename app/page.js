@@ -19,6 +19,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import ExpertContactModal from "@/components/home/ExpertContactModal";
 
 const TrustIndicator = ({ icon, text }) => (
   <div className="flex items-center gap-2 text-sm text-foreground/70">
@@ -84,8 +85,8 @@ export default async function Home() {
             </p>
           </div>
           <div className="flex flex-wrap justify-center gap-3">
-            <Button size="lg" className="px-8 text-base">
-              Solicitar valoración gratuita
+            <Button asChild size="lg" className="px-8 text-base">
+              <Link href="/tasacion">Solicitar valoración gratuita</Link>
             </Button>
             <Button
               size="lg"
@@ -281,9 +282,7 @@ export default async function Home() {
             Cientos de propietarios ya delegaron la venta de su coche en nosotros.
             Conversemos y descubre cómo podemos ayudarte.
           </p>
-          <Button size="lg" className="px-8 text-base">
-            Hablar con un experto
-          </Button>
+          <ExpertContactModal triggerVariant="default" triggerClassName="px-8 text-base" />
         </div>
       </section>
     </div>

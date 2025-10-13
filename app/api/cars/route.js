@@ -29,12 +29,14 @@ export async function POST(request) {
     const bodyType = form.get('bodyType') || null;
     const seats = form.get('seats') ? parseInt(form.get('seats')) : null;
     const description = form.get('description');
+    const featuredRaw = form.get('featured');
+    const featured = typeof featuredRaw === 'string' ? (featuredRaw === 'true' || featuredRaw === 'on' || featuredRaw === '1') : false;
 
     // Resolve brand/model IDs (support manual brand/model creation)
     let resolvedBrandId = brandId;
     if (!resolvedBrandId && brandName) {
       const existingBrand = await db.carBrand.findUnique({ where: { name: brandName } });
-      const brand = existingBrand || await db.carBrand.create({ data: { name: brandName } });
+      const brand = existingBrand || await db.carBrand.create({ data: { name: brandName, createdByUserId: user.id } });
       resolvedBrandId = brand.id;
     }
 
@@ -44,7 +46,7 @@ export async function POST(request) {
         return NextResponse.json({ error: 'Debes especificar una marca para crear un modelo' }, { status: 400 });
       }
       const existingModel = await db.carModel.findFirst({ where: { brandId: resolvedBrandId, name: modelName } });
-      const model = existingModel || await db.carModel.create({ data: { brandId: resolvedBrandId, name: modelName } });
+      const model = existingModel || await db.carModel.create({ data: { brandId: resolvedBrandId, name: modelName, createdByUserId: user.id } });
       resolvedModelId = model.id;
     }
 
@@ -70,6 +72,7 @@ export async function POST(request) {
         bodyType,
         seats,
         status: 'activo',
+        featured,
       },
       select: { id: true },
     });

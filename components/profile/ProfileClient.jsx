@@ -6,6 +6,9 @@ import Link from "next/link";
 import AvatarUpload from "./AvatarUpload";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
+import { toast } from "sonner";
 import {
   Card,
   CardContent,
@@ -221,7 +224,70 @@ export default function ProfileClient({ initialUser }) {
           <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
             {(user?.cars || []).map((c) => (
-              <CarCard key={c.id} car={c} />
+              <div key={c.id} className="space-y-2">
+                <CarCard car={c} />
+                <div className="rounded-lg border border-accent/25 bg-background/80 p-3 flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-2">
+                    <Checkbox
+                      id={`feat-${c.id}`}
+                      checked={!!c.featured}
+                      onCheckedChange={async (v) => {
+                        const next = !!v;
+                        const res = await fetch(`/api/cars/${c.id}`, {
+                          method: 'PATCH',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({ featured: next }),
+                        });
+                        const ok = res.ok;
+                        if (ok) {
+                          setUser((u) => ({
+                            ...u,
+                            cars: (u.cars || []).map((cc) => cc.id === c.id ? { ...cc, featured: next } : cc),
+                          }));
+                          toast.success(next ? 'Marcado como destacado' : 'Quitado de destacados');
+                        } else {
+                          const { error } = await res.json();
+                          toast.error(error || 'Error actualizando destacado');
+                        }
+                      }}
+                    />
+                    <label htmlFor={`feat-${c.id}`} className="text-sm text-foreground/80">Destacado</label>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-foreground/60">Estado</span>
+                    <Select
+                      value={c.status}
+                      onValueChange={async (val) => {
+                        const res = await fetch(`/api/cars/${c.id}`, {
+                          method: 'PATCH',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({ status: val }),
+                        });
+                        const ok = res.ok;
+                        if (ok) {
+                          setUser((u) => ({
+                            ...u,
+                            cars: (u.cars || []).map((cc) => cc.id === c.id ? { ...cc, status: val } : cc),
+                          }));
+                          toast.success('Estado actualizado');
+                        } else {
+                          const { error } = await res.json();
+                          toast.error(error || 'Error actualizando estado');
+                        }
+                      }}
+                    >
+                      <SelectTrigger className="h-8 w-[140px]">
+                        <SelectValue placeholder="Estado" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="activo">Activo</SelectItem>
+                        <SelectItem value="reservado">Reservado</SelectItem>
+                        <SelectItem value="vendido">Vendido</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              </div>
             ))}
           </div>
           </CardContent>
