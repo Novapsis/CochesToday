@@ -4,16 +4,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import { db } from "@/lib/prisma";
 import aj from "@/lib/arcjet";
 import { request } from "@arcjet/next";
-
-// Function to serialize car data
-function serializeCarData(car) {
-  return {
-    ...car,
-    price: car.price ? parseFloat(car.price.toString()) : 0,
-    createdAt: car.createdAt?.toISOString(),
-    updatedAt: car.updatedAt?.toISOString(),
-  };
-}
+import { serializeCarData } from "@/lib/helpers";
 
 /**
  * Get cars managed by a specific owner email (Supabase-hosted Postgres via Prisma)
