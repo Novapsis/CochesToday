@@ -18,44 +18,40 @@ export const CarCard = ({ car }) => {
   const router = useRouter();
   const [isSaved, setIsSaved] = useState(car.wishlisted);
 
-  // Use the useFetch hook
-  const {
-    loading: isToggling,
-    fn: toggleSavedCarFn,
-    data: toggleResult,
-    error: toggleError,
-  } = useFetch(toggleSavedCar);
+  // Temporarily disabled for debugging production build
+  // const {
+  //   loading: isToggling,
+  //   fn: toggleSavedCarFn,
+  //   data: toggleResult,
+  //   error: toggleError,
+  // } = useFetch(toggleSavedCar);
 
-  // Handle toggle result with useEffect
-  useEffect(() => {
-    if (toggleResult?.success && toggleResult.saved !== isSaved) {
-      setIsSaved(toggleResult.saved);
-      toast.success(toggleResult.message);
-    }
-  }, [toggleResult, isSaved]);
+  // useEffect(() => {
+  //   if (toggleResult?.success && toggleResult.saved !== isSaved) {
+  //     setIsSaved(toggleResult.saved);
+  //     toast.success(toggleResult.message);
+  //   }
+  // }, [toggleResult, isSaved]);
 
-  // Handle errors with useEffect
-  useEffect(() => {
-    if (toggleError) {
-      toast.error("Error al actualizar favoritos");
-    }
-  }, [toggleError]);
+  // useEffect(() => {
+  //   if (toggleError) {
+  //     toast.error("Failed to update favorites");
+  //   }
+  // }, [toggleError]);
 
-  // Handle save/unsave car
   const handleToggleSave = async (e) => {
     e.preventDefault();
     e.stopPropagation();
 
     if (!user) {
-      toast.error("Inicia sesión para guardar coches");
+      toast.error("Please sign in to save cars");
       router.push("/sign-in");
       return;
     }
 
-    if (isToggling) return;
-
-    // Call the toggleSavedCar function using our useFetch hook
-    await toggleSavedCarFn(car.id);
+    toast.info("Save function is temporarily disabled for debugging.");
+    // if (isToggling) return;
+    // await toggleSavedCarFn(car.id);
   };
 
   return (
