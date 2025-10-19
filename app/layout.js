@@ -5,6 +5,7 @@ import Footer from "@/components/footer";
 import AuthProvider from "@/components/auth/AuthProvider";
 import { Toaster } from "sonner";
 import ThemeProvider from "@/components/theme-provider";
+// import { ConciergeChat } from "@/components/concierge-chat";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -28,6 +29,7 @@ export default function RootLayout({ children }) {
             <Footer />
           </AuthProvider>
         </ThemeProvider>
+        {/* <ConciergeChat /> */}
       </body>
     </html>
   );

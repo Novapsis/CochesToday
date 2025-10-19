@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import Image from 'next/image';
+import { Logo } from './logo';
 import { Facebook, Twitter, Instagram, Linkedin, Mail, Phone, MapPin } from 'lucide-react';
 
 export default function Footer() {
@@ -10,13 +10,7 @@ export default function Footer() {
           {/* Logo y Descripción */}
           <div className="space-y-4">
             <Link href="/" className="inline-block">
-              <Image
-                src="/logo.png"
-                alt="CochesToday"
-                width={180}
-                height={60}
-                className="h-12 w-auto"
-              />
+              <Logo className="h-10 w-auto" />
             </Link>
             <p className="text-sm text-foreground/60">
               La plataforma más confiable para comprar y vender coches en España. 

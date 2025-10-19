@@ -273,16 +273,13 @@ export default async function Home() {
         </section>
       )}
 
+      {/* --- Final CTA Section --- */}
       <section className="py-20">
-        <div className="container mx-auto px-4 text-center space-y-6">
-          <h2 className="text-3xl md:text-4xl font-semibold text-foreground">
-            ¿Listo para empezar?
-          </h2>
-          <p className="mx-auto max-w-2xl text-foreground/70 leading-relaxed">
-            Cientos de propietarios ya delegaron la venta de su coche en nosotros.
-            Conversemos y descubre cómo podemos ayudarte.
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-3xl font-bold mb-4">¿Listo para empezar?</h2>
+          <p className="text-xl text-gray-400 mb-8 max-w-2xl mx-auto">
+            Cientos de propietarios ya delegaron la venta de su coche en nosotros. Conversemos y descubre cómo podemos ayudarte.
           </p>
-          <ExpertContactModal triggerVariant="default" triggerClassName="px-8 text-base" />
         </div>
       </section>
     </div>

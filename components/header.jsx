@@ -8,6 +8,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from './ui
 import ThemeToggle from '@/components/theme-toggle';
 import Link from 'next/link';
 import Image from 'next/image';
+import { Logo } from './logo';
 import { useAuth } from './auth/AuthProvider'; // Import our new hook
 
 const Header = ({ isAdminPage = false }) => {
@@ -20,13 +21,7 @@ const Header = ({ isAdminPage = false }) => {
         <div className="flex items-center justify-between gap-4">
         {/* Left: Logo */}
           <Link href={isAdminPage ? '/admin' : '/'} className="flex items-center gap-2">
-            <Image
-              src={'/logo.png'}
-              alt="CochesToday Logo" // Updated alt text
-              width={160}
-              height={48}
-              className="h-10 w-auto object-contain"
-            />
+            <Logo className="h-10 w-auto" />
             {isAdminPage && (
               <span className="text-xs uppercase tracking-[0.3em] text-foreground/50">
                 Admin

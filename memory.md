@@ -28,61 +28,45 @@ Se realizó una migración integral del sistema de autenticación para eliminar 
 ## Estado Actual
 El proyecto se encuentra en un estado **estable y funcional**. Arranca correctamente con `npm run dev` y utiliza un sistema de autenticación unificado y moderno basado 100% en Supabase. La base técnica para construir las funcionalidades del marketplace está lista.
 
-# Solución definitiva al error de autenticar con Google
+---
 
-## Síntomas observados
-- Google OAuth no creaba sesión ni usuario en `auth.users` tras el login.
-- En navegador no aparecía error claro; a veces el flujo volvía a la app sin sesión.
-- Logs de Supabase Auth mostraban:
-  - `400 Unsupported provider: provider is not enabled` (intentos iniciales)
-  - `500 Unable to exchange external code ... oauth2: "invalid_client" "Unauthorized"` (después)
-- Tras login con Google, `next/image` fallaba con avatar de Google: dominio no permitido.
+# Resumen de Sesiones Posteriores (12-14 de Octubre)
 
-## Causa raíz
-- Proveedor Google con credenciales/URIs desincronizadas entre Supabase y Google Cloud (provocando `invalid_client`).
-- Falta de persistencia de cookies en el callback al redirigir inmediatamente (sesión no se pegaba).
-- Falta de dominio `lh3.googleusercontent.com` en `next.config.mjs` para `next/image` (rompía el render del avatar).
+## Hito 1: Estabilización del Entorno de Producción
 
-## Cambios aplicados (código)
-- `app/auth/callback/route.js`
-  - Cambiado a `createServerClient` de `@supabase/ssr` con binding de cookies en la respuesta para persistir la sesión antes del redirect.
-  - Respeta `?redirect=/ruta` y añade logging: intercambio de código y `checkUser()`.
-- `components/auth/AuthProvider.jsx`
-  - `signOut()` ahora redirige a la home (`router.replace('/')`) tras cerrar sesión.
-- `next.config.mjs`
-  - Añadido host de Google para avatares: `lh3.googleusercontent.com` en `images.remotePatterns`.
-- `app/(auth)/sign-in/[[...sign-in]]/page.jsx` y `app/(auth)/sign-up/[[...sign-up]]/page.jsx`
-  - Formularios más anchos (`max-w-xl`) y sólo Google + Magic Link.
-  - `redirectTo` apunta a `/auth/callback?redirect=...`.
-- `components/header.jsx`
-  - Estilo modernizado; navegación central: `Explorar` y `Publicar`.
-  - Eliminado link "Mi Perfil" del menú central para no logeados.
-  - En la derecha, para logeados, sólo avatar como acceso al perfil y botón de "Cerrar Sesión".
-- `actions/car-listing.js`
-  - `getCarFilters()` actualizado a esquema actual (usa `CarBrand` y deduplica `bodyType/fuelType/transmission`).
+Tras un despliegue fallido en Coolify con un error genérico (`clientModules`), se identificó una inestabilidad fundamental en el stack tecnológico.
 
-## Cambios y verificaciones (configuración)
-- Supabase Dashboard → Authentication → Providers → Google:
-  - Activado "Enabled".
-  - Configurados `Client ID` y `Client Secret` correctos desde Google Cloud.
-  - Copiada la "Authorize redirect URI" exacta.
-- Google Cloud Console → OAuth 2.0 Client (tipo Web application):
-  - `Authorized redirect URIs` incluye exactamente:
-    - `https://<project-ref>.supabase.co/auth/v1/callback`
-  - (Opcional para local) `http://localhost:3000/auth/callback`.
-  - Si el Consent Screen está en "Testing", añadir correos en "Test users".
-- Supabase Dashboard → Authentication → URL Configuration:
-  - `Site URL`: `http://localhost:3000` durante desarrollo.
-  - `Redirect URLs`: incluir `http://localhost:3000/**`.
+- **Causa Raíz:** Incompatibilidad en producción entre las versiones "bleeding-edge" de **Next.js 15 / React 19** y otras dependencias.
+- **Solución Aplicada:** Se realizó un **downgrade estratégico** del proyecto a una base estable:
+    - **Next.js:** `15.1.7` → `14.2.4`
+    - **React & React-DOM:** `19` → `18`
+    - **ESLint Config:** Actualizada para ser compatible con Next.js 14.
+- **Resultado:** Se resolvieron todos los conflictos de dependencias (`ERESOLVE`), eliminando la necesidad del flag `--legacy-peer-deps` y solucionando el error de producción. **El proyecto quedó desplegado y funcionando.**
 
-## Validación
-- Logs del servidor Next.js muestran:
-  - `[auth/callback] code present, attempting session exchange`
-  - `[auth/callback] session exchange ok, user id: ...`
-  - `[auth/callback] checkUser completed for: ...`
-- Usuario aparece en Supabase → Authentication → Users y queda autenticado en la app.
-- Avatar de Google renderiza correctamente (sin error de dominio de imágenes).
+## Hito 2: Rediseño de Identidad Visual y UX
 
-## Referencias útiles
-- Guía completa de diagnóstico: `GOOGLE_AUTH_DEBUG.md`.
-- Guía de Storage y subida de imágenes (avatars/cars): `SUPABASE_STORAGE_SETUP.md`.
+Con la plataforma estable, nos centramos en mejorar la experiencia de usuario y la identidad de marca.
+
+- **Diseño de Logo:**
+    - Se creó un **nuevo componente de logo (`<Logo />`)** basado en SVG, mostrando "Coches" en negro mate y "Today" en dorado.
+    - Se hizo "theme-aware": el texto "Coches" cambia a blanco en el modo oscuro.
+- **Integración Global del Logo:**
+    - Se reemplazó el logo antiguo (imagen `.png`) por el nuevo componente `<Logo />` en el **Header** y en el **Footer**.
+    - Se añadió el logo a las páginas de **Sign-in** y **Sign-up** para dar consistencia a la marca.
+- **Rediseño de la Página de Login:**
+    - Se descartó el formulario genérico de email/contraseña.
+    - Se construyó desde cero una **página de inicio de sesión minimalista y elegante** basada en el feedback del usuario, con un layout de dos columnas.
+    - **Columna Izquierda:** Contiene un formulario para **Magic Link** y un botón de **Google Auth**.
+    - **Columna Derecha:** Muestra textos de marketing y las "Ventajas Premium" de la plataforma.
+    - Se actualizó el `AuthProvider` para soportar la nueva lógica de `signInWithMagicLink`.
+
+## Hito 3: Integración de Chat Interactivo (n8n)
+
+Se integró un chat de n8n para el botón "Hablar con un experto".
+
+- **Creación de Componente (`<ConciergeChat />`):** Se creó un componente reutilizable para encapsular la lógica del chat.
+- **Depuración Extensiva:** Se solucionaron varios problemas para hacer funcionar el script externo del chat:
+    1.  **Race Condition:** Se implementó un sistema de "polling" (vigilancia) para asegurar que el script estuviera completamente cargado antes de activar el botón.
+    2.  **Error de Configuración:** Se corrigió el formato de la `webhook URL` que se pasaba al script.
+    3.  **Conflicto de Carga:** Como último recurso, se reemplazó el componente `<Script>` de Next.js por un método de **inyección manual de scripts** en el DOM para garantizar la carga y ejecución correctas.
+- **Integración Final:** Se reemplazó el botón estático en la página de inicio y en la de login por el componente `<ConciergeChat />` funcional.
